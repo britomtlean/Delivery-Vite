@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+
+#root {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+    @apply h-screen w-full overflow-hidden
+    /*bg-gradient-to-b from-[rgb(96,167,167)] to-[rgb(105,168,126)]*/
+    bg-radial from-blue-400/50 to-blue-500/80
+    flex flex-col items-center font-sans
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+    color: white;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #43626b;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+button:hover {
+    border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+
+@keyframes led {
+    0% {
+        color: #ff4800;
+        text-shadow:
+            0 0 8px #ff4800,
+            0 0 16px #ff3b3b;
+    }
+
+    25% {
+        color: #5e3757;
+        text-shadow:
+            0 0 8px #5e3757,
+            0 0 16px #5e3757;
+    }
+
+    50% {
+        color: #370aff;
+        text-shadow:
+            0 0 8px #530aff,
+            0 0 16px #740aff;
+    }
+
+    75% {
+        color: #ff4d6d;
+        text-shadow:
+            0 0 8px #ff4d6d,
+            0 0 16px #ff4d6d;
+    }
+
+    100% {
+        color: #ff3b3b;
+        text-shadow:
+            0 0 8px #ff3b3b,
+            0 0 16px #ff3b3b;
+    }
+}
