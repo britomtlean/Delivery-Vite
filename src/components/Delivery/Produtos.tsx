@@ -2,15 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 
 type Produto = {
-    produtoId: string;
+    id?: string;
     nome: string;
     descricao: string;
-    quantidade: number;
+    estoque: number;
     valor: number;
-    subtotal: number;
+    subtotal?: number;
     categoria: string;
     imagem: string;
-    id?: string
 };
 
 const Produtos = () => {
@@ -79,21 +78,21 @@ const Produtos = () => {
               ></button>
 
               <div className="flex-8 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
+                  <h1 className="text-[2rem]! text-black! mb-2.5 font-bold">Mais vendidos</h1>
                   {firstProduct == null ? (
                       'Carregando...'
                   ) : (
                       <>
                           <img
-                              className="flex-5 min-w-3/4 max-h-[180px] rounded-3xl"
+                              className="flex-5 min-w-3/4 max-h-[160px] rounded-3xl"
                               src={`http://localhost:5157/images/${firstProduct.imagem}`}
                               alt=""
                           />
                           <h2 className="flex-1 text-black! text-[1.8rem]! font-extrabold">{firstProduct.nome}</h2>
                           <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">{firstProduct.descricao}</h2>
-                          <h2 className="flex-1 text-black! text-[1.5rem]! font-medium">{firstProduct.valor}</h2>
-                          <a className="text-[1.2rem]" href="">
-                              Detalhes
-                          </a>
+                          <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">
+                              {firstProduct.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </h2>
                       </>
                   )}
               </div>
@@ -118,23 +117,25 @@ const Produtos = () => {
                   onChange={(e) => setBusca(e.target.value)}
                   className="my-4 px-4 py-2 rounded w-full text-[16px] font-normal shadow bg-sky-200"
               />
-              <ul className="w-full grid grid-cols-3 py-2 bg-slate-300">
+              <ul className="w-full grid grid-cols-4 py-2 bg-slate-300">
                   <li>Nome</li>
                   <li>Valor</li>
+                  <li>Estoque</li>
                   <li>Dados</li>
               </ul>
               <div className="w-full overflow-y-scroll">
                   {dadosFiltrados?.map((item) => (
                       <ul
-                          className="grid grid-rows-2 grid-cols-3
+                          className="grid grid-rows-2 grid-cols-4
                           w-full py-3 bg-blue-300 border-b border-white
                           font-light hover:bg-white "
                           key={item.id}
                       >
                           <>
                               <li>{item.nome}</li>
-                              <li>R$ {item.valor}</li>
-                              <Link to={`/painel/${''}`} className="hover:cursor-pointer">
+                              <li>{item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
+                              <li>{item.estoque}</li>
+                              <Link to={`/produto/${item.id}`} className="hover:cursor-pointer">
                                   Detalhes
                               </Link>
                           </>

@@ -13,6 +13,7 @@ import Login from './Login.tsx'
 import Home from './components/Delivery/Home.tsx';
 import Sucesso from './components/Delivery/Payment/Sucesso.tsx';
 import Aguarde from './components/Delivery/Payment/Aguarde.tsx';
+import ProdutosDetalhes from './components/Delivery/ProdutosDetalhes.tsx';
 
 
 
@@ -28,6 +29,10 @@ let router = createBrowserRouter([
     {
         path: '/sucesso/',
         element: <Sucesso />,
+    },
+    {
+        path: '/produto/:id',
+        element: <ProdutosDetalhes />,
     },
 ]);
 

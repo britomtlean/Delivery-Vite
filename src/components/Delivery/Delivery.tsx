@@ -13,6 +13,7 @@ declare global {
 }
 
 function Delivery() {
+
     /////////////////////// AUDIO \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     const [sala, setSala] = useState<string>('');
@@ -78,6 +79,17 @@ function Delivery() {
             .build();
 
         setConnection(newConnection);
+
+        const notify = async () => {
+                const permission = await Notification.requestPermission();
+
+                if (permission === 'granted') {
+                    console.log('Permissão concedida');
+                }
+        }
+
+        notify()
+        
     }, []);
 
     // 3 - INICIAR CONEXÃO E RECEBER MENSAGENS
