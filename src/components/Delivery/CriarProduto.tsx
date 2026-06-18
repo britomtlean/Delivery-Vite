@@ -11,7 +11,7 @@ const CriarProduto = () => {
     const [file, setFile] = useState<File | undefined>();
 
 
-    const createObject = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const createObject = async (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -38,7 +38,7 @@ const CriarProduto = () => {
         {
             alert('Produto criado com sucesso!')
         }
-        
+
         console.log(data)
 
     };
