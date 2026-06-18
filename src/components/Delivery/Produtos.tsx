@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode, type Dispatch, type SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 
 type Produto = {
@@ -12,7 +12,11 @@ type Produto = {
     imagem: string;
 };
 
-const Produtos = () => {
+type Prop = {
+    render: Dispatch<SetStateAction<string>>;
+};
+
+const Produtos = ({render} : Prop) => {
 
     // PRODUCTS
     const [produtos, setProdutos] = useState<Array<Produto> | null>(null);
@@ -67,9 +71,10 @@ const Produtos = () => {
 
 
   return (
-      <div className="grid grid-cols-5 grid-rows-5 w-full h-full px-50 py-5 border-t-2 border-white gap-y-5 gap-x-1">
+      <div className="grid grid-cols-5 grid-rows-5 w-full h-full py-5 border-t-2 border-white gap-y-5 gap-x-1 px-10
+      2xl:px-0">
           <div
-              className="w-4/5 h-full flex justify-center items-center col-span-2 row-span-2
+              className="w-7/8 h-full flex justify-center items-center col-span-2 row-span-2
           shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border"
           >
               <button
@@ -144,15 +149,16 @@ const Produtos = () => {
               </div>
           </div>
 
-          <div className="p-10 bg-slate-800/50 w-4/5 h-3/8 flex justify-center items-center col-span-2 rounded ">
+          <div className="p-10 bg-slate-800/50 w-7/8 h-3/8 flex justify-center items-center col-span-2 rounded ">
               <h2 className="text-2xl">Editar</h2>
           </div>
 
-          <div className="p-4 bg-slate-600/50 w-4/5 h-full flex justify-center items-center col-span-2 col-start-1 row-start-3 rounded">
+          <div className="p-4 bg-slate-600/50 w-7/8 h-full flex justify-center items-center col-span-2 col-start-1 row-start-3 rounded">
               <h2 className="text-2xl bg-white/30 w-full h-full text-center rounded-2xl"></h2>
           </div>
 
-          <button className="h-1/2 w-full col-span-3 col-start-3 row-start-4 bg-blue-500!">Novo Produto</button>
+          <button className="h-1/2 w-full col-span-3 col-start-3 row-start-4 bg-blue-500!"
+          onClick={() => render('new')}>Novo Produto</button>
       </div>
   );
 }

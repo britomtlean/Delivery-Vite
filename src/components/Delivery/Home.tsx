@@ -4,6 +4,7 @@ import Pendentes from './Pendentes';
 import Concluido from './Concluidos';
 import Carrosel from './Produtos';
 import Delivery from './Delivery';
+import CriarProduto from './CriarProduto';
 
 const Home = () => {
     //NAVEGAÇÃO
@@ -18,7 +19,9 @@ const Home = () => {
             case 'confirmados':
                 return <Concluido />;
             case 'produtos':
-                return <Carrosel />;
+                return <Carrosel render={setSection} />;
+            case 'new':
+                return <CriarProduto />
             default:
                 return <Delivery />;
         }
@@ -60,7 +63,7 @@ const Home = () => {
                 </ul>
             </header>
 
-            <div className="h-full w-full flex justify-center items-start pt-4">{renderComponente()}</div>
+            <div className="h-full w-full max-w-[1280px] flex justify-center items-start pt-4">{renderComponente()}</div>
         </>
     );
 };

@@ -89,7 +89,7 @@ function Delivery() {
         }
 
         notify()
-        
+
     }, []);
 
     // 3 - INICIAR CONEXÃO E RECEBER MENSAGENS
