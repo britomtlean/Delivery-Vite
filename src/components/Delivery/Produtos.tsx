@@ -29,7 +29,8 @@ const Produtos = ({render} : Prop) => {
         {
           const res = await fetch('http://localhost:5157/api/Produtos');
           const data = await res.json();
-          setProdutos(() =>{console.log(data); return data})
+          setProdutos(() =>{console.log(data); return data});
+          setProdutosList(data);
         }
 
       getProducts();
@@ -63,8 +64,9 @@ const Produtos = ({render} : Prop) => {
 
 
     const [busca, setBusca] = useState<string>('');
+    const [produtosList, setProdutosList] = useState<Array<Produto> | null>(null);
 
-    const dadosFiltrados = produtos?.filter((item) => {
+    const dadosFiltrados = produtosList?.filter((item) => {
         const texto = busca.toLowerCase();
         return item.nome.toLowerCase().includes(texto) || String(item.valor).includes(texto);
     });
@@ -140,7 +142,7 @@ const Produtos = ({render} : Prop) => {
                               <li>{item.nome}</li>
                               <li>{item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
                               <li>{item.estoque}</li>
-                              <Link to={`/produto/${item.id}`} className="hover:cursor-pointer">
+                              <Link to={`/produto/${item.id}`} target='_blank' className="hover:cursor-pointer">
                                   Detalhes
                               </Link>
                           </>
