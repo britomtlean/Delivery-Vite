@@ -48,7 +48,7 @@ const Home = () => {
         <>
             {user ? (
                 <>
-                    <header className="w-full min-h-[10vh] py-4 px-[20%] flex justify-between items-center mb-4 bg-[rgb(48,62,83)]">
+                    <header className="w-full h-[10vh] py-4 px-[20%] flex justify-between items-center mb-4 bg-[rgb(48,62,83)]">
                         <h1 className="text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
 
                         <ul className="flex items-center">

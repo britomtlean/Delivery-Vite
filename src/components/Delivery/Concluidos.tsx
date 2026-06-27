@@ -210,6 +210,7 @@ export default function Concluidos() {
                                     <th className="px-6 py-4 text-center">Contato</th>
                                     <th className="px-6 py-4 text-center">Valor</th>
                                     <th className="px-6 py-4 text-cener">Data</th>
+                                    <th className="px-6 py-4 text-center">Detalhes</th>
                                     <th className="px-6 py-4 text-center">Status Loja</th>
                                 </tr>
                             </thead>
@@ -231,6 +232,15 @@ export default function Concluidos() {
                                         </td>
 
                                         <td className="px-6 py-4">{row.data}</td>
+
+                                        <td className="px-6 py-4">
+                                            <a
+                                                target="_blank"
+                                                href={`https://servidor-sistema-vendas.up.railway.app/PDF/venda_${row.id}.pdf`}
+                                            >
+                                                Informações
+                                            </a>
+                                        </td>
 
                                         <td className="px-6 py-4">
                                             {row.status === true ? (
