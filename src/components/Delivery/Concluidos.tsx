@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { checkDate } from '../../services/Date';
 
 interface ProdutoPedido {
     produtoId: string;
@@ -21,27 +22,22 @@ interface Pedido {
 }
 
 export default function Concluidos() {
+
     const [vendas, setVendas] = useState<Pedido[]>([]);
     const [ultimaLista, setUltimaLista] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
 
-    const [paginaAtual, setPaginaAtual] = useState<number>(1);
-
     const REGISTROS_POR_PAGINA = 5;
 
+    //PADRÃO INPUT PARA DATA LOCAL
     const [dataSelecionada, setDataSelecionada] = useState<string>(
         new Date().toLocaleDateString("sv-SE", {
             timeZone: "America/Sao_Paulo",
         })
     );
 
-    /************** FUNÇÕES **************/
-
-    function getDataLocalFormatada(data: string): string {
-        return new Date(data).toLocaleDateString("sv-SE", {
-            timeZone: "America/Sao_Paulo",
-        });
-    }
+    //PAGES
+    const [paginaAtual, setPaginaAtual] = useState<number>(1);
 
     /************** FETCH **************/
 
@@ -61,6 +57,7 @@ export default function Concluidos() {
         const data = await res.json();
         console.log(data);
 
+        //FORMATAR PEDIDO
         const novosPedidos: Pedido[] = data.map((p: any) => ({
             id: p.id,
             dataOriginal: p.dataPedido,
@@ -89,43 +86,6 @@ export default function Concluidos() {
     }
 }
 
-    /************** AÇÕES **************/
-
-    async function handleConcluir(id: number): Promise<void> {
-        const confirmar = confirm(
-            "Deseja marcar esta venda como concluída?"
-        );
-
-        if (!confirmar) return;
-
-        try {
-            const res = await fetch(
-                `https://servidor-sistema-vendas.up.railway.app/vendas/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        status: "concluido",
-                    }),
-                }
-            );
-
-            if (!res.ok) {
-                throw new Error("Erro ao concluir venda");
-            }
-
-            alert("Venda concluída com sucesso!");
-
-            await carregarPedidos();
-        } catch (err) {
-            if (err instanceof Error) {
-                alert("Erro: " + err.message);
-            }
-        }
-    }
-
     /************** EFFECT **************/
 
     useEffect(() => {
@@ -133,7 +93,7 @@ export default function Concluidos() {
 
         const interval = setInterval(() => {
             carregarPedidos();
-        }, 5000);
+        }, 20000);
 
         return () => clearInterval(interval);
     }, []);
@@ -141,9 +101,10 @@ export default function Concluidos() {
     /************** FILTRO **************/
 
     const vendasFiltradas = vendas.filter((v) => {
-        const dataLocal = getDataLocalFormatada(v.dataOriginal);
 
-        return (!dataSelecionada || dataLocal === dataSelecionada) && v.status == true;
+        const dataFiltrada = checkDate(dataSelecionada, v.dataOriginal);
+
+        return (!dataSelecionada || dataFiltrada) && v.status == true;
     });
 
     /************** PAGINAÇÃO **************/

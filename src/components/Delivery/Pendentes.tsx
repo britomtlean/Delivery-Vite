@@ -21,6 +21,7 @@ interface Pedido {
 }
 
 export default function Pendentes() {
+    
     const [vendas, setVendas] = useState<Pedido[]>([]);
     const [ultimaLista, setUltimaLista] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
@@ -123,7 +124,7 @@ async function carregarPedidos(): Promise<void> {
 
         const interval = setInterval(() => {
             carregarPedidos();
-        }, 5000);
+        }, 20000);
 
         return () => clearInterval(interval);
     }, []);
