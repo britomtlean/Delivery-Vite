@@ -11,7 +11,6 @@ import { ContextProvider } from './context/ContextProvider';
 //COMPONENTS
 import Login from './components/All/Login.tsx';
 import Home from './components/Delivery/Home.tsx';
-import Sucesso from './components/Delivery/Payment/Sucesso.tsx';
 import ProdutosDetalhes from './components/Delivery/ProdutosDetalhes.tsx';
 
 let router = createBrowserRouter([
@@ -22,10 +21,6 @@ let router = createBrowserRouter([
     {
         path: '/auth/',
         element: <Login />,
-    },
-    {
-        path: '/sucesso/',
-        element: <Sucesso />,
     },
     {
         path: '/produto/:id',
