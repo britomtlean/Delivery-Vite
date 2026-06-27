@@ -90,40 +90,31 @@ async function carregarPedidos(): Promise<void> {
 
     /************** AÇÕES **************/
 
-    async function handleConcluir(id: number): Promise<void> {
-        const confirmar = confirm(
-            "Deseja marcar esta venda como concluída?"
-        );
-
-        if (!confirmar) return;
-
-        try {
-            const res = await fetch(
-                `https://servidor-sistema-vendas.up.railway.app/vendas/${id}`,
-                {
-                    method: "PUT",
+        const confirmOrder = async (pedido: Record<string, any>) => {
+            try {
+                const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/confirmar', {
+                    method: 'PUT',
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        status: "concluido",
-                    }),
+                    body: JSON.stringify(pedido),
+                });
+
+                const data = await res.text();
+
+                if (!res.ok) {
+                    throw new Error(data);
                 }
-            );
 
-            if (!res.ok) {
-                throw new Error("Erro ao concluir venda");
+                console.log(data);
+
+                alert(data);
+
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao enviar pedido');
             }
-
-            alert("Venda concluída com sucesso!");
-
-            await carregarPedidos();
-        } catch (err) {
-            if (err instanceof Error) {
-                alert("Erro: " + err.message);
-            }
-        }
-    }
+        };
 
     /************** EFFECT **************/
 
@@ -209,6 +200,7 @@ async function carregarPedidos(): Promise<void> {
                                     <th className="px-6 py-4 text-left">Contato</th>
                                     <th className="px-6 py-4 text-left">Valor</th>
                                     <th className="px-6 py-4 text-left">Data</th>
+                                    <th className="px-6 py-4 text-left">Ações</th>
                                     <th className="px-6 py-4 text-left">Status</th>
                                 </tr>
                             </thead>
@@ -230,6 +222,8 @@ async function carregarPedidos(): Promise<void> {
                                         </td>
 
                                         <td className="px-6 py-4">{row.data}</td>
+
+                                        <td className="px-6 py-4"><button onClick={() => {confirmOrder(row)}}>Concluir</button></td>
 
                                         <td className="px-6 py-4">
                                             {row.status === true ? (
