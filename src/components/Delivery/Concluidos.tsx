@@ -45,9 +45,9 @@ export default function Concluidos() {
 
     /************** FETCH **************/
 
-async function carregarPedidos(): Promise<void> {
+    async function carregarPedidos(): Promise<void> {
     try {
-        const res = await fetch('http://localhost:5157/api/pedido', {
+        const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,6 +59,7 @@ async function carregarPedidos(): Promise<void> {
         }
 
         const data = await res.json();
+        console.log(data);
 
         const novosPedidos: Pedido[] = data.map((p: any) => ({
             id: p.id,

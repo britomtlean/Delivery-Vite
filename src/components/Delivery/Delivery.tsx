@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import somPedido from '../../assets/meme-fail-alert-locran-1-00-01.mp3';
-import Pendentes from './Pendentes';
-import Concluido from './Concluidos';
-import Carrosel from './Produtos';
 
 declare global {
     interface Window {
@@ -65,7 +62,7 @@ function Delivery() {
 
     /////////////////////// SIGNALR \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-    //NOTIFICAÇÃ<O></O>
+    //NOTIFICAÇÃO
     const [live, setLive] = useState<Array<Record<string, any>> | null>(null);
 
     // 1 - CRIAR STATE PARA RECEBER CONEXÃO
@@ -74,7 +71,7 @@ function Delivery() {
     // 2 - CONFIGURAR CONEXÃO APÓS PRIMEIRA RENDERIZAÇÃO
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5157/chat')
+            .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
             .withAutomaticReconnect()
             .build();
 
@@ -132,7 +129,7 @@ function Delivery() {
     /////////////////////////// ACTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     const confirmOrder = async (pedido: Record<string, any>) => {
         try {
-            const res = await fetch('http://localhost:5157/api/pedido/confirmar', {
+            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/confirmar', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,7 +158,7 @@ function Delivery() {
 
     const cancelOrder = async (pedido: Record<string, any>) => {
         try {
-            const res = await fetch('http://localhost:5157/api/pedido/cancelar', {
+            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/cancelar', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

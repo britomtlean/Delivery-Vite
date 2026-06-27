@@ -47,7 +47,7 @@ export default function Pendentes() {
 
 async function carregarPedidos(): Promise<void> {
     try {
-        const res = await fetch('http://localhost:5157/api/pedido', {
+        const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

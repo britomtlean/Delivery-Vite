@@ -9,13 +9,10 @@ import './index.css';
 import { ContextProvider } from './context/ContextProvider';
 
 //COMPONENTS
-import Login from './Login.tsx'
+import Login from './components/All/Login.tsx';
 import Home from './components/Delivery/Home.tsx';
 import Sucesso from './components/Delivery/Payment/Sucesso.tsx';
-import Aguarde from './components/Delivery/Payment/Aguarde.tsx';
 import ProdutosDetalhes from './components/Delivery/ProdutosDetalhes.tsx';
-
-
 
 let router = createBrowserRouter([
     {
@@ -23,7 +20,7 @@ let router = createBrowserRouter([
         element: <Home />,
     },
     {
-        path: '/login/',
+        path: '/auth/',
         element: <Login />,
     },
     {

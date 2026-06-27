@@ -1,6 +1,13 @@
 import { useState, createContext } from 'react';
 import type { PropsWithChildren } from 'react'; //TIPAGEM PROP
 
+export type User = {
+    id: string;
+    nome: string;
+    cpf: string;
+    senha: string;
+};
+
 export type ContextType = {
     theme: string;
     setTheme: React.Dispatch<React.SetStateAction<string>>;
@@ -8,8 +15,8 @@ export type ContextType = {
     setStatus: React.Dispatch<React.SetStateAction<boolean>>;
     message: string;
     setMessage: React.Dispatch<React.SetStateAction<string>>;
-    user: string;
-    setUser: React.Dispatch<React.SetStateAction<string>>;
+    user: Record<string, any> | null;
+    setUser: React.Dispatch<React.SetStateAction<Record<string, any> | null>>;
     contato: string;
     setContato: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -24,7 +31,7 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [theme, setTheme] = useState<string>('Default');
     const [status, setStatus] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('Hello Context');
-    const [user, setUser] = useState<string>('Default');
+    const [user, setUser] = useState<Record<string, any> | null>(null);
     const [contato, setContato] = useState<string>('');
 
     return (
