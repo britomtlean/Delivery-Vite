@@ -247,7 +247,7 @@ const Produtos = ({render} : Prop) => {
           </div>
 
           <div className="p-10 bg-slate-800/50 w-7/8 h-3/8 flex justify-center items-center col-span-2 rounded ">
-              <h2 className="text-2xl">Editar</h2>
+              <h2 className="text-2xl">Compartilhar</h2>
           </div>
 
           <div className="p-4 bg-slate-600/50 w-7/8 h-full flex flex-col  justify-center items-center col-span-2 col-start-1 row-start-3 rounded">

@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import type { Product } from '../../types/Product';
 
 const ProdutosDetalhes = () => {
+
+    //ROUTER
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     // PRODUCTS
     const [produto, setProduto] = useState<Product | null>(null);
@@ -46,6 +49,25 @@ const ProdutosDetalhes = () => {
         nomeRef.current.focus()
     }
 
+    const handleDelete = async () => {
+
+        const confirm = prompt("Digite 'CONFIRMO' para continuar")
+
+        if(confirm != 'CONFIRMO') return
+
+        const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/Produtos/delete/${id}`, {
+            method: 'DELETE',
+        });
+
+        const data = await res.json();
+
+        if(!res.ok)
+        {throw Error(data)}
+
+        alert('Produto exluído');
+        navigate('/');
+    }
+
     return (
         <div
             className="w-5/6 max-w-[1380px] h-screen
@@ -76,7 +98,7 @@ const ProdutosDetalhes = () => {
                 >
                     Editar
                 </button>
-                <button className="w-3/5 h-1/8 bg-red-600!">Excluir</button>
+                <button onClick={() => {handleDelete()}} className="w-3/5 h-1/8 bg-red-600!">Excluir</button>
             </div>
 
             <div

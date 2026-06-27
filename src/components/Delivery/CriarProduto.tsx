@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { FaBoxOpen } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
 
 const CriarProduto = () => {
+
+    const navigate = useNavigate();
 
     const [nome, setNome ] = useState<string>();
     const [valor, setValor] = useState<number>();
@@ -27,7 +30,7 @@ const CriarProduto = () => {
 
         console.log(formData);
 
-        const res = await fetch('http://localhost:5157/api/Produtos', {
+        const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos', {
             method: 'POST',
             body: formData,
         });
@@ -37,6 +40,7 @@ const CriarProduto = () => {
         if(res.ok)
         {
             alert('Produto criado com sucesso!')
+            navigate('/');
         }
 
         console.log(data)
@@ -53,13 +57,13 @@ const CriarProduto = () => {
 
   return (
       <div
-          className="border w-full h-full
+          className="w-full h-full
     flex flex-col justify-start items-center gap-4 p-4"
       >
-          <div className="w-full border text-center font-black">
+          <div className="w-full text-center font-black">
               <h1 className="text-black!">Criar Produto</h1>
           </div>
-          <div className="w-full h-full border flex justify-center pt-4 px-4 gap-10">
+          <div className="w-full h-full flex justify-center pt-4 px-4 gap-10">
               <div className="flex-1">
                   <FaBoxOpen className="w-full text-9xl text-gray-200" />
               </div>
