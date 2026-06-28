@@ -120,7 +120,7 @@ function Delivery() {
             });
 
         return () => {
-            connection.stop();
+            connection.invoke('SairSala', 'loja').finally(() => connection.stop());
         };
     }, [connection]);
 
