@@ -245,7 +245,9 @@ function Delivery() {
                                             </span>
                                         </li>
                                     ))}
-                                    <div className="flex justify-between items-center gap-24 mt-2 px-8">
+                                    <div
+                                        className={`${pedido.status ? 'hidden' : 'flex justify-between items-center gap-24 mt-2 px-8'}`}
+                                    >
                                         <button
                                             className="flex-1"
                                             onClick={async () => {
@@ -261,6 +263,17 @@ function Delivery() {
                                         >
                                             Confirmar
                                         </button>
+                                    </div>
+                                    <div
+                                        className={`${pedido.status == true ? 'flex justify-between items-center gap-24 mt-2 px-8' : 'hidden'}`}
+                                    >
+                                        <button
+                                            className="flex-1"
+                                        >
+                                            OK
+                                        </button>
+
+
                                     </div>
                                 </ul>
                             </div>
