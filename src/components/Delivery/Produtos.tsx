@@ -169,7 +169,7 @@ const Produtos = ({render} : Prop) => {
       2xl:px-0"
       >
           <div
-              className="w-7/8 h-full flex justify-center items-center col-span-2 row-span-2
+              className="w-7/8 h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
           shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border"
           >
               <button
