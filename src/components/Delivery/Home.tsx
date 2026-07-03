@@ -48,42 +48,53 @@ const Home = () => {
         <>
             {user ? (
                 <>
-                    <header className="w-full h-[10vh] py-4 px-[20%] flex justify-center lg:justify-between items-center mb-4 bg-[rgb(48,62,83)]">
-                        <h1 className="hidden lg:block text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
+                    <header
+                        className="w-full h-[10vh] py-4 flex justify-between items-center px-[10%] mb-4 bg-[rgb(48,62,83)]
+                        md:px-[20%]"
+                    >
+                        <h1 className="hidden md:block text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
 
-                        <ul className="hidden lg:flex items-center">
+                        <ul className="flex items-center">
                             <li
                                 onClick={() => setSection('live')}
-                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b hover:border-red-500 hover:text-red-500"
+                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4 hover:border-red-500 hover:text-red-500"
                             >
                                 Live
                             </li>
 
                             <li
                                 onClick={() => setSection('pendentes')}
-                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b  hover:border-red-500 hover:text-red-500"
+                                className="hidden md:block ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
                             >
                                 Pendentes
                             </li>
 
                             <li
                                 onClick={() => setSection('confirmados')}
-                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b  hover:border-red-500 hover:text-red-500"
+                                className="hidden md:block ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
                             >
                                 Confirmados
                             </li>
 
                             <li
                                 onClick={() => setSection('produtos')}
-                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b  hover:border-red-500 hover:text-red-500"
+                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
                             >
                                 Produtos
                             </li>
+
+                            <li
+                                onClick={() => setSection('estoque')}
+                                className="hidden md:block ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
+                            >
+                                Estoque
+                            </li>
                         </ul>
 
-                        <div className="flex flex-col gap-1 p-2 rounded-2xl">
-                            <h3 className="text-white font-bold text-[0.8rem] hidden lg:block">{user?.nome}</h3>
+                        <div className="flex h-full gap-4 rounded-2xl flex-wrap justify-center items-center">
+                            <h3 className="text-white font-bold text-[0.8rem] hidden">{user?.nome}</h3>
                             <button
+                                className=""
                                 onClick={() => {
                                     setUser((prev) => {
                                         deleteToken();

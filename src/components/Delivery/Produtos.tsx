@@ -165,33 +165,35 @@ const Produtos = ({render} : Prop) => {
 
   return (
       <div
-          className="grid grid-cols-5 grid-rows-5 w-full h-full py-5 border-t-2 border-white gap-y-5 gap-x-1 px-10
-      2xl:px-0"
+          className="flex flex-col justify-start items-center overflow-y-scroll w-full h-full pt-10 pb-30 border-t-2 border-white gap-y-5 gap-x-1 px-2
+                    md:grid md:overflow-hidden md:py-5 md:px-10 grid-cols-5 grid-rows-5"
       >
           <div
-              className="w-7/8 h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
-          shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border"
+              className="w-full h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
+          shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border
+          md:w-7/8"
           >
               <button
                   className="flex-1! h-full border-l-0! rounded-r-[0]! bg-black-300/50!"
                   onClick={returnProduct}
               ></button>
 
-              <div className="flex-8 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
-                  <h1 className="text-[2rem]! text-black! mb-2.5 font-bold">Mais vendidos</h1>
+              <div className="flex-8 flex flex-col justify-center items-center flex-wrap h-full bg-gray-200/10 p-4">
+                  <h1 className="text-[1.5rem]! text-black! mb-2.5 font-bold">Mais vendidos</h1>
+
                   {firstProduct == null ? (
                       'Carregando...'
                   ) : (
                       <>
                           <img
-                              className="flex-5 min-w-3/4 max-h-[160px] rounded-3xl"
+                              className="flex-5 min-w-3/4 max-h-[160px] rounded-3xl lg:mb-4"
                               src={`${firstProduct.imagem}`}
                               alt=""
                           />
-                          <h2 className="flex-1 text-black! text-[1.8rem]! font-extrabold text-center">
+                          <h2 className="flex-1 text-black! text-[1rem]! font-extrabold text-center">
                               {firstProduct.nome}
                           </h2>
-                          <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">{firstProduct.descricao}</h2>
+                          <h2 className="flex-1 text-black! text-[1rem]! font-medium">{firstProduct.descricao}</h2>
                           <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">
                               {firstProduct.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                           </h2>
@@ -246,13 +248,13 @@ const Produtos = ({render} : Prop) => {
               </div>
           </div>
 
-          <div className="p-10 bg-slate-800/50 w-7/8 h-3/8 flex justify-center items-center col-span-2 rounded ">
+          <div className="p-10 bg-slate-800/50 w-7/8 h-3/8 hidden md:flex justify-center items-center col-span-2 rounded ">
               <h2 className="text-2xl">Compartilhar</h2>
           </div>
 
-          <div className="p-4 bg-slate-600/50 w-7/8 h-full flex flex-col  justify-center items-center col-span-2 col-start-1 row-start-3 rounded">
+          <div className="p-4 bg-slate-600/10 w-7/8 h-full hidden md:flex flex-col  justify-center items-center col-span-2 col-start-1 row-start-3 rounded">
               <h1 className="text-3xl! text-black! font-bold">Total de vendas:</h1>
-              <h2 className="text-3xl bg-white/30 w-full h-full text-center rounded-2xl flex justify-center items-center">
+              <h2 className="text-2xl bg-white/30 w-full h-full text-center rounded-2xl flex justify-center items-center">
                   <span className="text-red-500 font-extrabold">
                       {firstProduct?.quantidadeVendida} produtos vendidos
                   </span>
