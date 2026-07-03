@@ -178,7 +178,7 @@ const Produtos = ({render} : Prop) => {
                   onClick={returnProduct}
               ></button>
 
-              <div className="flex-8 flex flex-col justify-center items-center flex-wrap h-full bg-gray-200/10 p-4">
+              <div className="flex-8 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
                   <h1 className="text-[1.5rem]! text-black! mb-2.5 font-bold">Mais vendidos</h1>
 
                   {firstProduct == null ? (

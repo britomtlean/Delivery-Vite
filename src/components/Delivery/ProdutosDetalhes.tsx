@@ -13,11 +13,43 @@ const ProdutosDetalhes = () => {
 
     //DISPLAY
     const [display, setDisplay] = useState<boolean>(false);
+    const [nome, setNome ] = useState<string>();
+    const [valor, setValor] = useState<string>();
+    const [disponibilidade, setDisponibilidade] = useState<string>();
+
+    const update = async (id: string) => {
+
+        const produto = new FormData();
+        produto.append('nome', id!);
+        produto.append("nome", nome!);
+        produto.append('valor', valor!);
+        produto.append('disponibilidade', disponibilidade!);
+
+        console.log(produto);
+
+        const res = await fetch('http://localhost:5157/api/Produtos/update/'+id, {
+            method: 'UPDATE',
+            credentials: 'include',
+            body: produto,
+        });
+
+        const data = await res.json();
+
+        if(!res.ok)
+            {alert(data.message)}
+
+        alert("Produto atualizado com sucesso")
+
+        setDisplay(false);
+    }
 
     //REFS
     const nomeRef = useRef<HTMLInputElement>(null);
     const valorRef = useRef<HTMLInputElement>(null);
     const statusRef = useRef<HTMLInputElement>(null);
+    const activeRef = useRef<HTMLInputElement>(null);
+    const desativeRef = useRef<HTMLInputElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         const getProducts = async () => {
@@ -35,10 +67,13 @@ const ProdutosDetalhes = () => {
 
     const displayFunction = () => {
 
-        if(!nomeRef.current || !valorRef.current || !statusRef.current) return
+        if(!nomeRef.current || !valorRef.current || !statusRef.current || !desativeRef.current || !activeRef.current || !buttonRef.current) return
 
         nomeRef.current.disabled = false;
         valorRef.current.disabled = false;
+        activeRef.current.disabled = false;
+        desativeRef.current.disabled = false;
+        buttonRef.current.disabled = false;
 
         nomeRef.current.style.border = '2px solid cyan';
         valorRef.current.style.border = '2px solid cyan';
@@ -47,6 +82,8 @@ const ProdutosDetalhes = () => {
         valorRef.current.style.outline = 'none';
 
         nomeRef.current.focus()
+
+        setDisplay(true);
     }
 
     const handleDelete = async () => {
@@ -78,11 +115,7 @@ const ProdutosDetalhes = () => {
                             h-3/4  py-15 mt-8 rounded-lg gap-4 border border-white transition-opacity ease-out duration-1000
                             ${display ? 'flex-3 opacity-70' : 'w-1/2'}`}
             >
-                <img
-                    className="flex-5 max-w-4/5 max-h-[280px] rounded-3xl"
-                    src={`${produto?.imagem}`}
-                    alt=""
-                />
+                <img className="flex-5 max-w-4/5 max-h-[280px] rounded-3xl" src={`${produto?.imagem}`} alt="" />
                 <h2 className="font-bold text-2xl">{produto?.nome}</h2>
                 <h2 className="font-bold text-2xl">{produto?.descricao}</h2>
                 <h2 className="font-bold text-2xl">
@@ -93,12 +126,18 @@ const ProdutosDetalhes = () => {
                     className="w-3/5 h-1/8 bg-cyan-600!"
                     onClick={() => {
                         displayFunction();
-                        setDisplay(true);
                     }}
                 >
                     Editar
                 </button>
-                <button onClick={() => {handleDelete()}} className="w-3/5 h-1/8 bg-red-600!">Excluir</button>
+                <button
+                    onClick={() => {
+                        handleDelete();
+                    }}
+                    className="w-3/5 h-1/8 bg-red-600!"
+                >
+                    Excluir
+                </button>
             </div>
 
             <div
@@ -112,7 +151,8 @@ const ProdutosDetalhes = () => {
                     className="h-full flex-2
               flex flex-col gap-3 justify-start items-center"
                     onSubmit={(e) => {
-                        '';
+                        e.preventDefault();
+                        update(id!);
                     }}
                 >
                     <input
@@ -123,7 +163,7 @@ const ProdutosDetalhes = () => {
                         placeholder={produto?.nome}
                         className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
-                            '';
+                            setNome(e.target.value);
                         }}
                     />
 
@@ -157,7 +197,7 @@ const ProdutosDetalhes = () => {
                         placeholder={produto?.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
-                            '';
+                            setValor(e.target.value);
                         }}
                     />
 
@@ -180,12 +220,29 @@ const ProdutosDetalhes = () => {
 
                     <div className={`flex gap-4 justify-center ${display ? 'opacity-100' : 'opacity-50'}`}>
                         <label>
-                            <input disabled type="radio" name="opcao" value="0" defaultChecked={true} />
+                            <input
+                                disabled
+                                type="radio"
+                                name="opcao"
+                                ref={activeRef}
+                                defaultChecked={true}
+                                onChange={(e) => {
+                                    setDisponibilidade('true');
+                                }}
+                            />
                             Disponível
                         </label>
 
                         <label>
-                            <input disabled type="radio" name="opcao" value="1" />
+                            <input
+                                disabled
+                                type="radio"
+                                name="opcao"
+                                ref={desativeRef}
+                                onChange={(e) => {
+                                    setDisponibilidade('false');
+                                }}
+                            />
                             Indisponível
                         </label>
                     </div>
@@ -201,6 +258,7 @@ const ProdutosDetalhes = () => {
                         disabled
                         className="bg-cyan-700! px-4 py-5! w-full rounded-lg text-center opacity-50"
                         type="submit"
+                        ref={buttonRef}
                     >
                         Salvar
                     </button>
