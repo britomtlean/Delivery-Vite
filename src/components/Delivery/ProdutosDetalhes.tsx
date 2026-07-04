@@ -14,61 +14,36 @@ const ProdutosDetalhes = () => {
     //DISPLAY
     const [display, setDisplay] = useState<boolean>(false);
     const [nome, setNome ] = useState<string>();
+    const [desc, setDesc] = useState<string>();
     const [valor, setValor] = useState<string>();
-    const [disponibilidade, setDisponibilidade] = useState<string>();
-
-    const update = async (id: string) => {
-
-        const produto = new FormData();
-        produto.append('nome', id!);
-        produto.append("nome", nome!);
-        produto.append('valor', valor!);
-        produto.append('disponibilidade', disponibilidade!);
-
-        console.log(produto);
-
-        const res = await fetch('http://localhost:5157/api/Produtos/update/'+id, {
-            method: 'UPDATE',
-            credentials: 'include',
-            body: produto,
-        });
-
-        const data = await res.json();
-
-        if(!res.ok)
-            {alert(data.message)}
-
-        alert("Produto atualizado com sucesso")
-
-        setDisplay(false);
-    }
+    const [disponibilidade, setDisponibilidade] = useState<string>('true');
 
     //REFS
     const nomeRef = useRef<HTMLInputElement>(null);
+    const descRef = useRef<HTMLInputElement>(null);
     const valorRef = useRef<HTMLInputElement>(null);
     const statusRef = useRef<HTMLInputElement>(null);
     const activeRef = useRef<HTMLInputElement>(null);
     const desativeRef = useRef<HTMLInputElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    useEffect(() => {
-        const getProducts = async () => {
-            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos');
-            const data = await res.json();
-            const produtoFiltred = data.find((array: Product) => array.id == id);
-            setProduto(() => {
-                console.log(produtoFiltred);
-                return produtoFiltred;
-            });
-        };
+    //ACTIONS
 
-        getProducts();
-    }, []);
+    const displayFunction = () =>
+    {
 
-    const displayFunction = () => {
+        if (
+            !nomeRef.current ||
+            !valorRef.current ||
+            !statusRef.current ||
+            !desativeRef.current ||
+            !activeRef.current ||
+            !buttonRef.current ||
+            !descRef.current
+        )
+            return;
 
-        if(!nomeRef.current || !valorRef.current || !statusRef.current || !desativeRef.current || !activeRef.current || !buttonRef.current) return
-
+        descRef.current.disabled = false;
         nomeRef.current.disabled = false;
         valorRef.current.disabled = false;
         activeRef.current.disabled = false;
@@ -76,9 +51,11 @@ const ProdutosDetalhes = () => {
         buttonRef.current.disabled = false;
 
         nomeRef.current.style.border = '2px solid cyan';
+        descRef.current.style.border = '2px solid cyan';
         valorRef.current.style.border = '2px solid cyan';
 
         nomeRef.current.style.outline = 'none';
+        descRef.current.style.outline = 'none';
         valorRef.current.style.outline = 'none';
 
         nomeRef.current.focus()
@@ -86,7 +63,8 @@ const ProdutosDetalhes = () => {
         setDisplay(true);
     }
 
-    const handleDelete = async () => {
+    const handleDelete = async () =>
+    {
 
         const confirm = prompt("Digite 'CONFIRMO' para continuar")
 
@@ -104,6 +82,59 @@ const ProdutosDetalhes = () => {
         alert('Produto exluído');
         navigate('/');
     }
+
+    const update = async (e: React.ChangeEvent<any>, id: string) =>
+    {
+
+        e.preventDefault();
+
+        const produto = new FormData();
+        //produto.append('id', id);
+        produto.append('nome', nome!);
+        produto.append('descricao', desc!);
+        produto.append('valor', valor!);
+        produto.append('disponibilidade', disponibilidade!);
+
+        const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/Produtos/update/${id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: produto,
+        });
+
+        const data = await res.text();
+
+        if (!res.ok) {
+            alert(data);
+            return
+        }
+
+        alert('Produto atualizado com sucesso');
+
+        await getProducts();
+        setDisplay(false);
+    };
+
+    const getProducts = async () => {
+
+        const res = await fetch(
+            'https://dotnet-webapi-base-production.up.railway.app/api/Produtos'
+        );
+        const data = await res.json();
+
+        const produtoFiltred = data.find((array: Product) => array.id == id);
+        console.log(produtoFiltred);
+
+        setProduto(() => {
+            return produtoFiltred;
+        });
+    };
+
+        //EFFECT
+
+    useEffect(() => {
+        getProducts();
+    }, []);
+
 
     return (
         <div
@@ -144,23 +175,22 @@ const ProdutosDetalhes = () => {
                 className={`flex justify-start items-center flex-col
                             h-3/4 flex-1 py-12 mt-8 rounded-lg gap-4 border transition-all ease-out duration-1000
 
-                            ${display ? 'flex flex-5 shadow-xl/30 border-white shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
+                            ${display ? 'flex flex-5 shadow-xl/30 bg-red-500 border-white shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
             >
                 <h1 className="font-bold text-black opacity-100 text-5xl!">Edição</h1>
                 <form
                     className="h-full flex-2
               flex flex-col gap-3 justify-start items-center"
                     onSubmit={(e) => {
-                        e.preventDefault();
-                        update(id!);
+                        update(e, produto?.id!);
                     }}
                 >
                     <input
                         disabled
                         type="text"
                         name="nome"
+                        defaultValue={produto?.nome}
                         ref={nomeRef}
-                        placeholder={produto?.nome}
                         className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
                             setNome(e.target.value);
@@ -171,11 +201,12 @@ const ProdutosDetalhes = () => {
                         disabled
                         type="text"
                         name="descricao"
+                        defaultValue={produto?.descricao}
+                        ref={descRef}
                         id=""
-                        placeholder={produto?.descricao}
-                        className="bg-gray-200 p-4 w-full rounded-lg text-center opacity-50"
+                        className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
-                            '';
+                            setDesc(e.target.value);
                         }}
                     />
 
@@ -193,8 +224,8 @@ const ProdutosDetalhes = () => {
                         disabled
                         type="text"
                         name="valor"
+                        defaultValue={produto?.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         ref={valorRef}
-                        placeholder={produto?.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
                             setValor(e.target.value);
@@ -206,7 +237,7 @@ const ProdutosDetalhes = () => {
                         type="text"
                         name="estoque"
                         id=""
-                        placeholder={produto?.estoque.toString()}
+                        value={produto?.estoque.toString()}
                         className="bg-gray-200 p-4 w-full rounded-lg text-center opacity-50"
                         onChange={(e) => {
                             '';
@@ -256,7 +287,8 @@ const ProdutosDetalhes = () => {
 
                     <button
                         disabled
-                        className="bg-cyan-700! px-4 py-5! w-full rounded-lg text-center opacity-50"
+                        className={`bg-cyan-500! px-4 py-5! w-full rounded-lg text-center
+                                    ${display ? 'opacity-100' : 'opacity-50'}`}
                         type="submit"
                         ref={buttonRef}
                     >
