@@ -16,6 +16,8 @@ const ProdutosDetalhes = () => {
     const [nome, setNome ] = useState<string>();
     const [desc, setDesc] = useState<string>();
     const [valor, setValor] = useState<string>();
+
+    //Revisar possível bug
     const [disponibilidade, setDisponibilidade] = useState<string>('true');
 
     //REFS

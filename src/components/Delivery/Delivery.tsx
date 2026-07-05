@@ -190,7 +190,7 @@ function Delivery() {
         <div className="h-full w-full overflow-hidden flex flex-col items-center">
             <>
                 <button
-                    className="mb-23 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95"
+                    className="mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95"
                     onClick={ativarSom}
                 >
                     Ativar Som

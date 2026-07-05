@@ -49,10 +49,10 @@ const Home = () => {
             {user ? (
                 <>
                     <header
-                        className="w-full h-[10vh] py-4 flex justify-between items-center px-[10%] mb-4 bg-[rgb(48,62,83)]
-                        md:px-[20%]"
+                        className="w-full h-[10vh] gap-5 py-4 flex justify-center items-center px-[5%] mb-4 bg-[rgb(48,62,83)]
+                        lg:px-[20%] xl:justify-between "
                     >
-                        <h1 className="hidden md:block text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
+                        <h1 className="hidden 2xl:flex text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
 
                         <ul className="flex items-center">
                             <li
@@ -91,7 +91,7 @@ const Home = () => {
                             </li>
                         </ul>
 
-                        <div className="flex h-full gap-4 rounded-2xl flex-wrap justify-center items-center">
+                        <div className="flex h-full gap-4 rounded-2xl justify-center items-center">
                             <h3 className="text-white font-bold text-[0.8rem] hidden">{user?.nome}</h3>
                             <button
                                 className=""
