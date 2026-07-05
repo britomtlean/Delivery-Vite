@@ -1,5 +1,5 @@
 import { useState, createContext } from 'react';
-import type { PropsWithChildren } from 'react'; //TIPAGEM PROP
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'; //TIPAGEM PROP
 
 export type User = {
     id: string;
@@ -19,6 +19,8 @@ export type ContextType = {
     setUser: React.Dispatch<React.SetStateAction<Record<string, any> | null>>;
     contato: string;
     setContato: React.Dispatch<React.SetStateAction<string>>;
+    notify: Array<Record<string, any>> | null;
+    setNotify: Dispatch<SetStateAction<Array<Record<string, any>> | null>>;
 };
 
 
@@ -33,9 +35,10 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [message, setMessage] = useState<string>('Hello Context');
     const [user, setUser] = useState<Record<string, any> | null>(null);
     const [contato, setContato] = useState<string>('');
+    const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
 
     return (
-        <Context.Provider value={{ theme, setTheme, status, setStatus, message, setMessage, user, setUser, contato, setContato }}>
+        <Context.Provider value={{ theme, setTheme, status, setStatus, message, setMessage, user, setUser, contato, setContato, notify, setNotify }}>
             {children}
         </Context.Provider>
     );

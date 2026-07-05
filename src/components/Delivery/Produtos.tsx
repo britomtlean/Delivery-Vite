@@ -171,7 +171,7 @@ const Produtos = ({render} : Prop) => {
                     md:grid md:overflow-hidden md:py-5 md:px-10 grid-cols-5 grid-rows-5"
       >
           <div
-              className="w-full h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
+              className="w-full h-3/5 md:h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
           shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border
           md:w-7/8"
           >

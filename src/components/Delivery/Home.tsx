@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect} from 'react';
+import { useState, useContext, useEffect, type JSX } from 'react';
 
 import Pendentes from './Pendentes';
 import Concluido from './Concluidos';
@@ -11,7 +11,6 @@ import Loading from '../../components/All/Loading';
 import { deleteToken } from '../../services/Storage';
 
 const Home = () => {
-
     //CONTEXT
     const { user, setUser } = useContext(Context)!;
 
@@ -19,15 +18,19 @@ const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user == null)
-            setTimeout(() => {navigate('/auth');}, 2000);
-    },[user])
 
+        if (user == null)
+        {
+            setTimeout(() => {
+                navigate('/auth');
+            }, 2000);
+        }
+    }, [user]);
 
     //NAVEGAÇÃO
     const [section, setSection] = useState<string>('live');
 
-    const renderComponente = () => {
+    const renderComponente = (): JSX.Element => {
         switch (section) {
             case 'live':
                 return <Delivery />;
@@ -119,6 +122,6 @@ const Home = () => {
             )}
         </>
     );
-};;
+};
 
 export default Home;

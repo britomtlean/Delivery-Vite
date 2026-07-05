@@ -7,6 +7,7 @@ import { Context } from '../../context/ContextProvider';
 import { getToken } from '../../services/Storage';
 
 const Login = () => {
+
     //CONTEXT
     const { setUser } = useContext(Context)!;
 
@@ -28,24 +29,25 @@ const Login = () => {
 
     //EFFECT
     useEffect(() => {
+
         async function start() {
-            await getToken()
+            await getToken() //PEGA TOKNEN GUARDADO NO LOCAL STORAGE
                 .then(async (token: string) => {
-                    await AuthData.getProfile(
+                    await AuthData.getProfile( //PASSA O TOKEN PARA A FUNÇÃO QUE VALIDA O TOKEN E RETORNA O USUARIO
                         JSON.parse(token),
                         'https://dotnet-webapi-base-production.up.railway.app/api/usuario/profile'
                     )
-                        .then((profile: Record<string, any>) => {
+                        .then((profile: Record<string, any>) => { // SE TOKEN FOR VALIDADO GUARDADO DADOS DO USUARIO NO CONTEXT
                             console.log('usuario autenticado:', profile);
                             setUser(profile);
                             navigate('/');
                         })
-                        .catch((er: Error) => {
+                        .catch((er: Error) => { // SE O TOKEN NÃO FOR VALIDADO RETORNA A TELA DE AUTENTICAÇÃO
                             console.log(er);
                             setLoading(false);
                         });
                 })
-                .catch((er: Error) => {
+                .catch((er: Error) => { // SE NÃO HOUVER TOKEN RETORNA A TELA DE AUTENTICAÇÃO
                     console.log(er);
                     setLoading(false);
                 });

@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
+import { Context } from '../../context/ContextProvider';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import somPedido from '../../assets/meme-fail-alert-locran-1-00-01.mp3';
 
@@ -10,6 +11,8 @@ declare global {
 }
 
 function Delivery() {
+    //CONTEXT
+    const { notify, setNotify } = useContext(Context)!;
 
     /////////////////////// AUDIO \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -63,7 +66,7 @@ function Delivery() {
     /////////////////////// SIGNALR \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     //NOTIFICAÇÃO
-    const [live, setLive] = useState<Array<Record<string, any>> | null>(null);
+    //const [live, setLive] = useState<Array<Record<string, any>> | null>(null);
 
     // 1 - CRIAR STATE PARA RECEBER CONEXÃO
     const [connection, setConnection] = useState<HubConnection | null>(null);
@@ -78,15 +81,14 @@ function Delivery() {
         setConnection(newConnection);
 
         const notify = async () => {
-                const permission = await Notification.requestPermission();
+            const permission = await Notification.requestPermission();
 
-                if (permission === 'granted') {
-                    console.log('Permissão concedida');
-                }
-        }
+            if (permission === 'granted') {
+                console.log('Permissão concedida');
+            }
+        };
 
-        notify()
-
+        notify();
     }, []);
 
     // 3 - INICIAR CONEXÃO E RECEBER MENSAGENS
@@ -105,11 +107,12 @@ function Delivery() {
                     console.log('📩 Servidor - ', message);
                     tocarSom();
                     setSala(sala);
-                    setLive((prev) => {
+
+                    setNotify((prev) => {
                         if (prev == null) {
                             return [message];
                         }
-                        const arrayPedidos = [...prev!, message];
+                        const arrayPedidos = [message, ...prev!];
                         console.log('Pedidos recentes:', arrayPedidos);
                         return arrayPedidos;
                     });
@@ -120,7 +123,7 @@ function Delivery() {
             });
 
         return () => {
-            connection.invoke('SairSala', 'loja').finally(() => connection.stop());
+            connection.invoke('SairSala', 'loja').finally(() => connection.stop()); //SE ALTERAR A CONEXÃO EXECUTA O RETURN
         };
     }, [connection]);
 
@@ -146,8 +149,8 @@ function Delivery() {
             console.log(data);
             alert(data);
 
-            setLive((): any => {
-                const atualizarPedidos = live?.filter((array) => array.id != pedido.id);
+            setNotify((): any => {
+                const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
                 return atualizarPedidos;
             });
         } catch (err) {
@@ -175,8 +178,8 @@ function Delivery() {
             console.log(data);
             alert(data);
 
-            setLive((): any => {
-                const atualizarPedidos = live?.filter((array) => array.id != pedido.id);
+            setNotify((): any => {
+                const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
                 return atualizarPedidos;
             });
         } catch (err) {
@@ -211,7 +214,7 @@ function Delivery() {
                         id="mensagens"
                         className="mt-6 mb-6 flex h-[48vh] w-[80%] lg:w-[50%] flex-col gap-3 overflow-y-auto rounded-2xl border border-white/10 bg-slate-200/40 p-10 py-8 shadow-lg backdrop-blur-md"
                     >
-                        {[...(live || [])].reverse().map((pedido) => (
+                        {(notify ?? []).map((pedido) => (
                             <div
                                 key={pedido.id}
                                 className="rounded-xl border border-white/10 bg-[rgb(48,83,83)]/30 p-4 transition-all duration-200 hover:bg-black/30"
@@ -267,13 +270,7 @@ function Delivery() {
                                     <div
                                         className={`${pedido.status == true ? 'flex justify-between items-center gap-24 mt-2 px-8' : 'hidden'}`}
                                     >
-                                        <button
-                                            className="flex-1"
-                                        >
-                                            OK
-                                        </button>
-
-
+                                        <button className="flex-1">OK</button>
                                     </div>
                                 </ul>
                             </div>
