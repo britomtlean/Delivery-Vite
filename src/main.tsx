@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { registerSW } from 'virtual:pwa-register';
 
 //ROUTER
 import { createBrowserRouter, RouterProvider } from 'react-router';
@@ -12,6 +13,10 @@ import { ContextProvider } from './context/ContextProvider';
 import Login from './components/All/Login.tsx';
 import Home from './components/Delivery/Home.tsx';
 import ProdutosDetalhes from './components/Delivery/ProdutosDetalhes.tsx';
+
+registerSW({
+    immediate: true,
+});
 
 let router = createBrowserRouter([
     {
