@@ -11,6 +11,7 @@ declare global {
 }
 
 function Delivery() {
+
     //CONTEXT
     const { notify, setNotify } = useContext(Context)!;
 
@@ -65,9 +66,6 @@ function Delivery() {
 
     /////////////////////// SIGNALR \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-    //NOTIFICAÇÃO
-    //const [live, setLive] = useState<Array<Record<string, any>> | null>(null);
-
     // 1 - CRIAR STATE PARA RECEBER CONEXÃO
     const [connection, setConnection] = useState<HubConnection | null>(null);
 
@@ -116,6 +114,7 @@ function Delivery() {
                         console.log('Pedidos recentes:', arrayPedidos);
                         return arrayPedidos;
                     });
+
                 });
             })
             .catch((err) => {
@@ -270,7 +269,13 @@ function Delivery() {
                                     <div
                                         className={`${pedido.status == true ? 'flex justify-between items-center gap-24 mt-2 px-8' : 'hidden'}`}
                                     >
-                                        <button className="flex-1">OK</button>
+                                        <button
+                                        className="flex-1"
+                                        onClick={() => {            
+                                            setNotify((): any => {
+                                            const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
+                                            return atualizarPedidos;
+                                        });}}>OK</button>
                                     </div>
                                 </ul>
                             </div>
