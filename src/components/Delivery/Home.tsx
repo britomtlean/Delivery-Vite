@@ -8,7 +8,7 @@ import CriarProduto from './CriarProduto';
 import { Context } from '../../context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/All/Loading';
-import { deleteToken } from '../../services/Storage';
+import { deleteToken } from '../../Services/Storage';
 
 const Home = () => {
     //CONTEXT
@@ -18,9 +18,7 @@ const Home = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
-        if (user == null)
-        {
+        if (user == null) {
             setTimeout(() => {
                 navigate('/auth');
             }, 2000);
@@ -111,8 +109,8 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full w-full max-w-[1280px]
-                    flex justify-center items-start pt-4"
+                        className="h-full w-full lg:w-[90%]
+                    flex justify-center items-start pt-"
                     >
                         {renderComponente()}
                     </div>

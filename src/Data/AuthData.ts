@@ -1,6 +1,8 @@
+import type { Login, User } from "../Types/Types";
 
 export class AuthData {
-    static async login(user: Record<string, any>, url: string): Promise<string> {
+
+    static async login(user: Login, url: string): Promise<string> {
         const res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -19,8 +21,9 @@ export class AuthData {
         return data;
     }
 
-    static async getProfile(token: string, http: string): Promise<Record<string, any>> {
-        const res = await fetch(http, {
+    static async getProfile(token: string, url: string): Promise<User> {
+
+        const res = await fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

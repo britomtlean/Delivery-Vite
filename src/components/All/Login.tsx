@@ -1,13 +1,13 @@
 import { useState, useContext, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { AuthData } from '../../data/AuthData';
+import { AuthData } from '../../Data/AuthData';
 import { useNavigate } from 'react-router-dom';
 import Loading from './Loading';
 import { Context } from '../../context/ContextProvider';
-import { getToken } from '../../services/Storage';
+import { getToken } from '../../Services/Storage';
+import type { Login, User } from '../../Types/Types';
 
 const Login = () => {
-
     //CONTEXT
     const { setUser } = useContext(Context)!;
 
@@ -29,25 +29,29 @@ const Login = () => {
 
     //EFFECT
     useEffect(() => {
-
         async function start() {
-            await getToken() //PEGA TOKNEN GUARDADO NO LOCAL STORAGE
+            //PEGA TOKNEN GUARDADO NO LOCAL STORAGE
+            await getToken()
                 .then(async (token: string) => {
-                    await AuthData.getProfile( //PASSA O TOKEN PARA A FUNÇÃO QUE VALIDA O TOKEN E RETORNA O USUARIO
+                    //VALIDA TOKEN E RETORNA USER
+                    await AuthData.getProfile(
                         JSON.parse(token),
                         'https://dotnet-webapi-base-production.up.railway.app/api/usuario/profile'
                     )
-                        .then((profile: Record<string, any>) => { // SE TOKEN FOR VALIDADO GUARDADO DADOS DO USUARIO NO CONTEXT
+                        .then((profile: User) => {
+                            // SE TOKEN FOR VALIDADO GUARDADO DADOS DO USUARIO NO CONTEXT
                             console.log('usuario autenticado:', profile);
                             setUser(profile);
                             navigate('/');
                         })
-                        .catch((er: Error) => { // SE O TOKEN NÃO FOR VALIDADO RETORNA A TELA DE AUTENTICAÇÃO
+                        .catch((er: Error) => {
+                            // SE O TOKEN NÃO FOR VALIDADO RETORNA A TELA DE AUTENTICAÇÃO
                             console.log(er);
                             setLoading(false);
                         });
                 })
-                .catch((er: Error) => { // SE NÃO HOUVER TOKEN RETORNA A TELA DE AUTENTICAÇÃO
+                .catch((er: Error) => {
+                    // SE NÃO HOUVER TOKEN RETORNA A TELA DE AUTENTICAÇÃO
                     console.log(er);
                     setLoading(false);
                 });
@@ -59,7 +63,7 @@ const Login = () => {
     const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user = {
+        const user: Login = {
             cpf: cpf,
             password: password,
         };
@@ -72,7 +76,7 @@ const Login = () => {
                     token,
                     'https://dotnet-webapi-base-production.up.railway.app/api/usuario/profile'
                 )
-                    .then((profile: Record<string, any>) => {
+                    .then((profile: User) => {
                         console.log('usuario autenticado:', profile);
                         setUser(profile);
                         navigate('/');

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { checkDate } from '../../services/Date';
+import { useEffect, useState } from 'react';
+import { checkDate } from '../../Services/Date';
 
 interface ProdutoPedido {
     produtoId: string;
@@ -22,17 +22,16 @@ interface Pedido {
 }
 
 export default function Concluidos() {
-
     const [vendas, setVendas] = useState<Pedido[]>([]);
-    const [ultimaLista, setUltimaLista] = useState<string>("");
+    const [ultimaLista, setUltimaLista] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
 
     const REGISTROS_POR_PAGINA = 5;
 
     //PADRÃO INPUT PARA DATA LOCAL
     const [dataSelecionada, setDataSelecionada] = useState<string>(
-        new Date().toLocaleDateString("sv-SE", {
-            timeZone: "America/Sao_Paulo",
+        new Date().toLocaleDateString('sv-SE', {
+            timeZone: 'America/Sao_Paulo',
         })
     );
 
@@ -42,49 +41,49 @@ export default function Concluidos() {
     /************** FETCH **************/
 
     async function carregarPedidos(): Promise<void> {
-    try {
-        const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        try {
+            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-        if (!res.ok) {
-            throw new Error(`Erro HTTP: ${res.status}`);
+            if (!res.ok) {
+                throw new Error(`Erro HTTP: ${res.status}`);
+            }
+
+            const data = await res.json();
+            console.log(data);
+
+            //FORMATAR PEDIDO
+            const novosPedidos: Pedido[] = data.map((p: any) => ({
+                id: p.id,
+                dataOriginal: p.dataPedido,
+                data: new Date(p.dataPedido).toLocaleString('pt-BR', {
+                    timeZone: 'America/Sao_Paulo',
+                }),
+                valorTotal: p.valorTotal,
+                status: p.status,
+                nomeCliente: p.nomeCliente,
+                contatoCliente: p.contatoCliente,
+                enderecoCliente: p.enderecoCliente,
+                produtos: p.produtos,
+            }));
+
+            const jsonString = JSON.stringify(novosPedidos);
+
+            if (jsonString !== ultimaLista) {
+                setVendas(novosPedidos);
+                setUltimaLista(jsonString);
+            }
+
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
         }
-
-        const data = await res.json();
-        console.log(data);
-
-        //FORMATAR PEDIDO
-        const novosPedidos: Pedido[] = data.map((p: any) => ({
-            id: p.id,
-            dataOriginal: p.dataPedido,
-            data: new Date(p.dataPedido).toLocaleString('pt-BR', {
-                timeZone: 'America/Sao_Paulo',
-            }),
-            valorTotal: p.valorTotal,
-            status: p.status,
-            nomeCliente: p.nomeCliente,
-            contatoCliente: p.contatoCliente,
-            enderecoCliente: p.enderecoCliente,
-            produtos: p.produtos,
-        }));
-
-        const jsonString = JSON.stringify(novosPedidos);
-
-        if (jsonString !== ultimaLista) {
-            setVendas(novosPedidos);
-            setUltimaLista(jsonString);
-        }
-
-        setLoading(false);
-    } catch (err) {
-        console.error(err);
-        setLoading(false);
     }
-}
 
     /************** EFFECT **************/
 
@@ -101,7 +100,6 @@ export default function Concluidos() {
     /************** FILTRO **************/
 
     const vendasFiltradas = vendas.filter((v) => {
-
         const dataFiltrada = checkDate(dataSelecionada, v.dataOriginal);
 
         return (!dataSelecionada || dataFiltrada) && v.status == true;
@@ -109,9 +107,7 @@ export default function Concluidos() {
 
     /************** PAGINAÇÃO **************/
 
-    const totalPaginas = Math.ceil(
-        vendasFiltradas.length / REGISTROS_POR_PAGINA
-    );
+    const totalPaginas = Math.ceil(vendasFiltradas.length / REGISTROS_POR_PAGINA);
 
     const inicio = (paginaAtual - 1) * REGISTROS_POR_PAGINA;
     const fim = inicio + REGISTROS_POR_PAGINA;
@@ -125,11 +121,7 @@ export default function Concluidos() {
     /************** RENDER **************/
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center p-10 text-2xl font-bold text-white">
-                Carregando...
-            </div>
-        );
+        return <div className="flex items-center justify-center p-10 text-2xl font-bold text-white">Carregando...</div>;
     }
 
     return (
@@ -195,7 +187,8 @@ export default function Concluidos() {
                                         <td className="px-6 py-4">{row.data}</td>
 
                                         <td className="px-6 py-4">
-                                            <a className="underline-offset-1"
+                                            <a
+                                                className="underline-offset-1"
                                                 target="_blank"
                                                 href={`https://servidor-sistema-vendas.up.railway.app/PDF/venda_${row.id}.pdf`}
                                             >

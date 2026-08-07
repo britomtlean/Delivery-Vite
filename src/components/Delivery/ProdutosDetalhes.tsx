@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import type { Product } from '../../types/Product';
+import type { Product } from '../../Types/Types';
 
 const ProdutosDetalhes = () => {
 
@@ -152,7 +152,7 @@ const ProdutosDetalhes = () => {
                 <h2 className="font-bold text-2xl">{produto?.nome}</h2>
                 <h2 className="font-bold text-2xl">{produto?.descricao}</h2>
                 <h2 className="font-bold text-2xl">
-                    {produto?.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {produto?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </h2>
                 <h2 className="font-bold text-2xl">{produto?.categoria}</h2>
                 <button
@@ -226,7 +226,7 @@ const ProdutosDetalhes = () => {
                         disabled
                         type="text"
                         name="valor"
-                        defaultValue={produto?.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        defaultValue={produto?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         ref={valorRef}
                         className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
@@ -239,7 +239,7 @@ const ProdutosDetalhes = () => {
                         type="text"
                         name="estoque"
                         id=""
-                        value={produto?.estoque.toString()}
+                        value={produto?.estoque?.toString()}
                         className="bg-gray-200 p-4 w-full rounded-lg text-center opacity-50"
                         onChange={(e) => {
                             '';

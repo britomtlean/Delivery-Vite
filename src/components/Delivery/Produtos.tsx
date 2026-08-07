@@ -2,17 +2,9 @@ import { useState, useEffect, type ReactNode, type Dispatch, type SetStateAction
 import { Link } from 'react-router-dom';
 import { FaAngleLeft } from 'react-icons/fa';
 import { FaAngleRight } from 'react-icons/fa';
+import { getToken } from '../../Services/Storage';
+import type { Product } from '../../Types/Types';
 
-type Produto = {
-    id?: string;
-    nome: string;
-    descricao: string;
-    estoque: number;
-    valor: number;
-    subtotal?: number;
-    categoria: string;
-    imagem: string;
-};
 
 type Prop = {
     render: Dispatch<SetStateAction<string>>;
@@ -38,67 +30,74 @@ interface Pedido {
     produtos: ProdutoPedido[];
 }
 
-const Produtos = ({render} : Prop) => {
-
+const Produtos = ({ render }: Prop) => {
     // PRODUCTS
-    const [produtos, setProdutos] = useState<Array<Produto> | null>(null);
-    const [top3, setTop3] = useState<Array<Produto> | null>(null);
+    const [produtos, setProdutos] = useState<Array<Product> | null>(null);
+    const [top3, setTop3] = useState<Array<Product> | null>(null);
     const [firstProduct, setFirstProduct] = useState<Record<string, any> | null>(null);
 
-
     const [busca, setBusca] = useState<string>('');
-    const [produtosList, setProdutosList] = useState<Array<Produto> | null>(null);
-
-
-    useEffect(() => {
-
-      const getProducts = async () =>
-        {
-          const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos');
-          const data = await res.json();
-
-          maisVendidos(data);
-          setProdutos(() =>{console.log(data); return data})
-          setProdutosList(data);
-        }
-
-      getProducts();
-    },[])
+    const [produtosList, setProdutosList] = useState<Array<Product> | null>(null);
 
     useEffect(() => {
-      if (!produtos) return;
 
-      setFirstProduct(top3?.find((arr, index) => index == 0 )!)
+        const getProducts = async () => {
 
+            const token = await getToken();
+            const res = await fetch('http://localhost:5157/api/Produtos', {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(token)}`,
+                },
+            });
 
+            const data = await res.json();
+
+            maisVendidos(data);
+            setProdutos(() => {
+                console.log(data);
+                return data;
+            });
+            setProdutosList(data);
+        };
+
+        getProducts();
+    }, []);
+
+    useEffect(() => {
+        if (!produtos) return;
+
+        setFirstProduct(top3?.find((arr, index) => index == 0)!);
     }, [top3]);
 
     const nextProduct = () => {
-      if(!top3) return
+        if (!top3) return;
 
-      const first: Produto = top3[0];
-      const fila: Array<Produto> = top3.filter((array, index) => index != 0);
-      const newArray: Array<Produto> = [...fila, first];
+        const first: Product = top3[0];
+        const fila: Array<Product> = top3.filter((array, index) => index != 0);
+        const newArray: Array<Product> = [...fila, first];
 
-      setTop3(newArray);
+        setTop3(newArray);
     };
 
     const returnProduct = () => {
-      if (!top3) return;
+        if (!top3) return;
 
-      const last: Produto = top3[produtos?.length! - 1];
-      const fila: Array<Produto> = top3?.filter((array, index) => index != produtos?.length! - 1);
-      const newArray: Array<Produto> = [last, ...fila];
+        const last: Product = top3[produtos?.length! - 1];
+        const fila: Array<Product> = top3?.filter((array, index) => index != produtos?.length! - 1);
+        const newArray: Array<Product> = [last, ...fila];
 
-      setTop3(newArray);
+        setTop3(newArray);
     };
 
-    async function maisVendidos(dataProduto: Produto[]): Promise<void> {
+    async function maisVendidos(dataProduto: Product[]): Promise<void> {
         try {
-            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
+            const token = await getToken();
+            const res = await fetch('http://localhost:5157/api/pedido', {
                 method: 'GET',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(token)}`,
                 },
             });
 
@@ -110,7 +109,7 @@ const Produtos = ({render} : Prop) => {
 
             ///////////////////
 
-            const top3MaisVendidos: Array<Produto> = Object.values(
+            const top3MaisVendidos: Array<Product> = Object.values(
                 //Converte em array
                 data
                     .flatMap((pedido: any) => pedido.produtos) //Transforma pedido.produtos em um único array
@@ -122,8 +121,7 @@ const Produtos = ({render} : Prop) => {
                                 produtoId: produto.produtoId,
                                 nome: produto.nome,
                                 imagem: dataProduto?.find((array) => array.id == produto.produtoId)?.imagem,
-                                descricao: dataProduto?.find((array) => array.id == produto.produtoId)
-                                    ?.descricao,
+                                descricao: dataProduto?.find((array) => array.id == produto.produtoId)?.descricao,
                                 valor: dataProduto?.find((array) => array.id == produto.produtoId)?.valor,
                                 quantidadeVendida: 0,
                             };
@@ -140,7 +138,7 @@ const Produtos = ({render} : Prop) => {
                 .sort((a: any, b: any) => b.quantidadeVendida - a.quantidadeVendida)
 
                 //Retornar os 3 primeiros itens
-                .slice(0, 3) as Array<Produto>;
+                .slice(0, 3) as Array<Product>;
 
             const produtosMaisVendidos = produtos?.filter((produto) =>
                 top3MaisVendidos.some((item) => item.nome === produto.nome)
@@ -165,112 +163,118 @@ const Produtos = ({render} : Prop) => {
 
     ////////////////////////////////////////////////////////////////////
 
-  return (
-      <div
-          className="flex flex-col justify-start items-center overflow-y-scroll w-full h-full pt-10 pb-30 border-t-2 border-white gap-y-5 gap-x-1 px-2
-                    md:grid md:overflow-hidden md:py-5 md:px-10 grid-cols-5 grid-rows-5"
-      >
-          <div
-              className="w-full h-3/5 md:h-full flex justify-center items-center flex-wrap col-span-2 row-span-2
-          shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border
-          md:w-7/8"
-          >
-              <button className="flex-1! h-full border-l-0! rounded-r-[0]! bg-black-300/50!" onClick={returnProduct}>
-                  <FaAngleLeft className="xl:text-3xl" />
-              </button>
+    return (
+        <div
+            className="flex flex-col justify-start items-center overflow-y-scroll w-full h-full pt-10 pb-30 border-t-2 border-white gap-y-5 gap-x-8
+                    md:grid md:overflow-hidden md:py-5 grid-cols-7 grid-rows-5 "
+        >
+            <div
+                className="w-full h-3/5 md:h-full flex justify-center items-center flex-wrap col-span-3 row-span-2
+                font-bold text-center
+                shadow-xl/30 rounded-3xl"
+            >
+                <button className="h-full bg-black-300/50!" onClick={returnProduct}>
+                    <FaAngleLeft className="size-6" />
+                </button>
 
-              <div className="flex-10 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
-                  <h1
-                      className="text-[1rem]! text-black! mb-2.5 font-bold
+                <div className="flex-10 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
+                    <h1
+                        className="text-[1rem]! text-black! mb-2.5 font-bold
                     lg:text-[1.7rem]!"
-                  >
-                      Mais vendidos
-                  </h1>
+                    >
+                        Mais vendidos
+                    </h1>
 
-                  {firstProduct == null ? (
-                      'Carregando...'
-                  ) : (
-                      <>
-                          <img
-                              className="flex-5 min-w-3/4 max-h-[50%] rounded-3xl lg:mb-4"
-                              src={`${firstProduct.imagem}`}
-                              alt=""
-                          />
-                          <h2 className="flex-1 text-black! text-[1rem]! font-extrabold text-center">
-                              {firstProduct.nome}
-                          </h2>
-                          <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">
-                              {firstProduct.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                          </h2>
-                      </>
-                  )}
-              </div>
+                    {firstProduct == null ? (
+                        'Carregando...'
+                    ) : (
+                        <>
+                            <img
+                                className="flex-5 min-w-3/4 max-h-[50%] rounded-3xl lg:mb-4"
+                                src={`${firstProduct.imagem}`}
+                                alt=""
+                            />
+                            <h2 className="flex-1 text-black! text-[1rem]! font-extrabold text-center">
+                                {firstProduct.nome}
+                            </h2>
+                            <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">
+                                {firstProduct.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </h2>
+                        </>
+                    )}
+                </div>
 
-              <button className="flex-1 h-full bg-black-300/50! border-r-0! rounded-l-[0]!" onClick={nextProduct}>
-                  <FaAngleRight className="xl:text-3xl" />
-              </button>
-          </div>
+                <button className="h-full bg-black-300/50!" onClick={nextProduct}>
+                    <FaAngleRight className="size-6" />
+                </button>
+            </div>
 
-          <div
-              className="p-5 md:p-10 w-full h-full
-              col-span-3 row-span-3 flex flex-col justify-start items-center
+            <div
+                className="p-5 md:p-7 w-full h-full
+              col-span-4 row-span-3 flex flex-col justify-start items-center
               font-bold text-center
-              rounded bg-radial from-blue-400/30 to-blue-500/30
-              shadow-xl/30 border-cyan-400 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border"
-          >
-              <input
-                  type="text"
-                  placeholder="Buscar..."
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  className="my-4 px-4 py-2 rounded w-full text-[16px] font-normal shadow bg-sky-200"
-              />
-              <ul className="w-full grid grid-cols-4 py-2 bg-slate-300">
-                  <li>Nome</li>
-                  <li>Valor</li>
-                  <li>Estoque</li>
-                  <li>Dados</li>
-              </ul>
-              <div className="w-full overflow-y-scroll">
-                  {dadosFiltrados?.map((item) => (
-                      <ul
-                          className="grid grid-rows-2 grid-cols-4
-                          w-full py-3 bg-blue-300 border-b border-white
-                          font-light hover:bg-white "
-                          key={item.id}
-                      >
-                          <>
-                              <li>{item.nome}</li>
-                              <li>{item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
-                              <li>{item.estoque}</li>
-                              <Link to={`/produto/${item.id}`} target="_blank" className="hover:cursor-pointer">
-                                  Detalhes
-                              </Link>
-                          </>
-                      </ul>
-                  ))}
-              </div>
-          </div>
+              bg-radial from-blue-400/20 to-blue-500/20
+              shadow-xl/30 border border-white rounded-3xl"
+            >
+                <input
+                    type="text"
+                    placeholder="Buscar..."
+                    value={busca}
+                    onChange={(e) => setBusca(e.target.value)}
+                    className="my-4 px-4 py-2 rounded w-full text-[16px] font-normal shadow bg-sky-200"
+                />
+                <ul className="w-full grid grid-cols-4 py-2 bg-slate-200 rounded-t-lg px-8">
+                    <li>Nome</li>
+                    <li>Valor</li>
+                    <li>Estoque</li>
+                    <li>Dados</li>
+                </ul>
+                <div className="w-full overflow-y-scroll rounded-b-lg">
+                    {dadosFiltrados?.map((item) => (
+                        <ul
+                            className="grid grid-rows-2 grid-cols-4 px-10
+                          w-full py-3 bg-blue-200 border-b border-white
+                          font-medium font-sans hover:bg-white "
+                            key={item.id}
+                        >
+                            <>
+                                <li>{item?.nome}</li>
+                                <li>{item?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
+                                <li>{item.estoque}</li>
+                                <Link to={`/produto/${item.id}`} target="_blank" className="hover:cursor-pointer">
+                                    Editar
+                                </Link>
+                            </>
+                        </ul>
+                    ))}
+                </div>
+            </div>
 
-          <button className="hidden md:block h-4/6 w-7/8 text-1xl col-span-2 bg-blue-500!">Compartilhar</button>
+            <button className="hidden md:block h-4/6 w-7/8 text-1xl col-span-2 bg-blue-500! hidden!">
+                Compartilhar
+            </button>
 
-          <div className="p-4 bg-slate-600/10 w-7/8 h-full hidden md:flex flex-col  justify-center items-center col-span-2 col-start-1 row-start-3 rounded">
-              <h1 className="text-2xl! text-black! font-bold">Total de vendas:</h1>
-              <h2 className="text-1xl bg-white/30 w-full h-full text-center rounded-1xl flex justify-center items-center">
-                  <span className="text-red-500 font-extrabold">
-                      {firstProduct?.quantidadeVendida} produtos vendidos
-                  </span>
-              </h2>
-          </div>
+            <div
+                className="p-4 w-full h-full hidden md:flex flex-col justify-center items-center gap-2 col-span-3 col-start-1 row-start-3 shadow-xl/30
+                bg-radial from-blue-400/20 to-blue-500/20 border border-white rounded-3xl"
+            >
+                <h1 className="text-3xl! text-black! font-sans">Total de vendas:</h1>
 
-          <button
-              className="h-4/6 w-full col-span-3 col-start-3 row-start-4 bg-blue-500! py-4!"
-              onClick={() => render('new')}
-          >
-              Novo Produto
-          </button>
-      </div>
-  );
-}
+                <div className="text-1xl bg-white/30 w-full h-full text-center rounded-3xl flex justify-center items-center">
+                    <span className="text-red-600 font-extrabold font-sans text-2xl">
+                        {firstProduct?.quantidadeVendida || 0} Produtos vendidos
+                    </span>
+                </div>
+            </div>
 
-export default Produtos
+            <button
+                className="h-4/6 w-full col-span-7 col-start-1 row-start-4 bg-blue-500! py-4! shadow-xl/30 rounded-3xl text-white"
+                onClick={() => render('new')}
+            >
+                Novo Produto
+            </button>
+        </div>
+    );
+};
+
+export default Produtos;
