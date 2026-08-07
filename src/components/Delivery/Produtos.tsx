@@ -44,7 +44,7 @@ const Produtos = ({ render }: Prop) => {
         const getProducts = async () => {
 
             const token = await getToken();
-            const res = await fetch('http://localhost:5157/api/Produtos', {
+            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos', {
                 headers: {
                     Authorization: `Bearer ${JSON.parse(token)}`,
                 },
@@ -92,7 +92,7 @@ const Produtos = ({ render }: Prop) => {
     async function maisVendidos(dataProduto: Product[]): Promise<void> {
         try {
             const token = await getToken();
-            const res = await fetch('http://localhost:5157/api/pedido', {
+            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido', {
                 method: 'GET',
                 credentials: 'include',
                 headers: {

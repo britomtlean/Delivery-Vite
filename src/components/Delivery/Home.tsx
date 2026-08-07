@@ -109,7 +109,7 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full w-full lg:w-[90%]
+                        className="h-full w-full lg:w-[90%] 2xl:w-[80%]
                     flex justify-center items-start pt-"
                     >
                         {renderComponente()}

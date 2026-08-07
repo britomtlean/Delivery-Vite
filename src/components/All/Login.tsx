@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from './Loading';
 import { Context } from '../../context/ContextProvider';
 import { getToken } from '../../Services/Storage';
-import type { Login, User } from '../../Types/Types';
+import type { LoginType, User } from '../../Types/Types';
 
 const Login = () => {
     //CONTEXT
@@ -63,7 +63,7 @@ const Login = () => {
     const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user: Login = {
+        const user: LoginType = {
             cpf: cpf,
             password: password,
         };

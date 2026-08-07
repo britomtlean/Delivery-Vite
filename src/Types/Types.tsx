@@ -10,7 +10,7 @@ export type Product = {
     dataCriacao?: string;
 };
 
-export type Login = {
+export type LoginType = {
     cpf: string;
     password: string;
 };
