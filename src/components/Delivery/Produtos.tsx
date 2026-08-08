@@ -306,7 +306,7 @@ const Produtos = ({ render }: Prop) => {
             </table>
 
             <button
-                className="h-3/4 w-full bg-blue-500! py-4! lg:relative lg:-top-4
+                className="h-3/4 w-full bg-blue-500! py-4! lg:relative lg:-top-4 hidden lg:block
                 col-start-4 col-span-4 row-start-5
                 shadow-xl/30 rounded-3xl text-white"
                 onClick={() => render('new')}
