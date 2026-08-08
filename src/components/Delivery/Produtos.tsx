@@ -165,56 +165,107 @@ const Produtos = ({ render }: Prop) => {
 
     return (
         <div
-            className="flex flex-col justify-start items-center overflow-y-scroll w-full h-full pt-10 pb-30 border-t-2 border-white gap-y-5 gap-x-8
-                    md:grid md:overflow-hidden md:py-5 grid-cols-7 grid-rows-5 "
+            className="w-full h-full border-t-2 border-white py-20
+            flex flex-col justify-start items-center overflow-y-scroll gap-10
+            lg:overflow-hidden lg:p-10 lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-y-5 lg:gap-x-8"
         >
-            <div
-                className="w-full h-3/5 md:h-full flex justify-center items-center flex-wrap col-span-3 row-span-2
-                font-bold text-center
-                shadow-xl/30 rounded-3xl"
-            >
-                <button className="h-full bg-black-300/50!" onClick={returnProduct}>
-                    <FaAngleLeft className="size-6" />
-                </button>
-
-                <div className="flex-10 flex flex-col justify-center items-center h-full bg-gray-200/10 p-4">
-                    <h1
-                        className="text-[1rem]! text-black! mb-2.5 font-bold
-                    lg:text-[1.7rem]!"
+            <div className="w-full h-3/5 lg:h-3/4 lg:w-8/9 row-start-1 row-span-3 col-start-1 col-span-3 relative -top-10">
+                <h1
+                    className="
+                    text-lg lg:text-4xl!
+                    text-black!
+                    font-black font-sans!
+                    mb-4 text-center
+                    [transform:perspective(200px)_rotateX(10deg)]
+                "
+                >
+                    Mais vendidos
+                </h1>
+                <div
+                    className="relative w-full h-full
+                    flex items-center justify-center"
+                >
+                    <button
+                        onClick={returnProduct}
+                        className="absolute left-3 z-10
+                        size-10 rounded-full h-[60px] w-[60px]
+                        text-white backdrop-blur-sm
+                        flex items-center justify-center
+                        transition-all hover:scale-110"
                     >
-                        Mais vendidos
-                    </h1>
+                        <FaAngleLeft className="size-5" />
+                    </button>
 
-                    {firstProduct == null ? (
-                        'Carregando...'
-                    ) : (
-                        <>
-                            <img
-                                className="flex-5 min-w-3/4 max-h-[50%] rounded-3xl lg:mb-4"
-                                src={`${firstProduct.imagem}`}
-                                alt=""
-                            />
-                            <h2 className="flex-1 text-black! text-[1rem]! font-extrabold text-center">
-                                {firstProduct.nome}
-                            </h2>
-                            <h2 className="flex-1 text-black! text-[1.2rem]! font-medium">
-                                {firstProduct.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                            </h2>
-                        </>
-                    )}
+                    <div
+                        className="w-full h-full
+                        flex flex-col justify-center items-center
+                        rounded-3xl
+                        bg-white/20 backdrop-blur-md
+                        border border-white/30
+                        shadow-xl
+                        p-4"
+                    >
+                        {firstProduct == null ? (
+                            <span>Carregando...</span>
+                        ) : (
+                            <>
+                                <img
+                                    className="max-w-[70%] max-h-[50%]
+                                object-contain rounded-2xl
+                                transition-transform hover:scale-105"
+                                    src={firstProduct.imagem}
+                                    alt={firstProduct.nome}
+                                />
+
+                                <h2 className="mt-4 text-black text-xl font-black">{firstProduct.nome}</h2>
+
+                                <h2 className="text-gray-800 text-xl font-bold">
+                                    {firstProduct.valor.toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                    })}
+                                </h2>
+                            </>
+                        )}
+                    </div>
+
+                    <button
+                        onClick={nextProduct}
+                        className="absolute right-3 z-10
+                        size-10 rounded-full h-[60px] w-[60px]
+                        text-white backdrop-blur-sm
+                        flex items-center justify-center
+                        transition-all hover:scale-110"
+                    >
+                        <FaAngleRight className="size-5" />
+                    </button>
                 </div>
-
-                <button className="h-full bg-black-300/50!" onClick={nextProduct}>
-                    <FaAngleRight className="size-6" />
-                </button>
             </div>
 
             <div
-                className="p-5 md:p-7 w-full h-full
-              col-span-4 row-span-3 flex flex-col justify-start items-center
-              font-bold text-center
-              bg-radial from-blue-400/20 to-blue-500/20
-              shadow-xl/30 border border-white rounded-3xl"
+                className="p-4 w-8/9 h-4/5 hidden relative -top-10
+                lg:flex flex-col justify-center items-center gap-2
+                col-start-1 col-span-3 row-start-4 row-span-2
+                bg-radial from-blue-400/20 to-blue-500/20 shadow-xl/30 border border-white rounded-3xl
+                hover:border-[3px] hover:border-[#64ffdd]"
+            >
+                <h1 className="text-3xl! text-black! font-sans font-medium">Total de vendas:</h1>
+
+                <div className="text-1xl bg-white/30 w-full h-full text-center rounded-3xl flex justify-center items-center">
+                    <h2 className="text-red-600 font-extrabold font-sans text-2xl">
+                        {firstProduct?.quantidadeVendida || 0} Produtos vendidos
+                    </h2>
+                </div>
+            </div>
+
+            <table
+                className="w-full h-full max-h-[600px] p-5 lg:p-7
+                row-start-1 row-span-4 col-start-4 col-span-4
+                flex flex-col justify-start items-center
+                font-bold text-center
+                bg-radial from-blue-400/20 to-blue-500/20
+                shadow-xl/30 border border-white rounded-3xl
+                hover:border-[3px] hover:border-[#64ffdd]"
             >
                 <input
                     type="text"
@@ -223,56 +274,49 @@ const Produtos = ({ render }: Prop) => {
                     onChange={(e) => setBusca(e.target.value)}
                     className="my-4 px-4 py-2 rounded w-full text-[16px] font-normal shadow bg-sky-200"
                 />
-                <ul className="w-full grid grid-cols-4 py-2 bg-slate-200 rounded-t-lg px-8">
-                    <li>Nome</li>
-                    <li>Valor</li>
-                    <li>Estoque</li>
-                    <li>Dados</li>
-                </ul>
-                <div className="w-full overflow-y-scroll rounded-b-lg">
+
+                <thead className="w-full">
+                    <tr className="w-full grid grid-cols-4 py-2 bg-slate-200 rounded-t-lg px-2 lg:px-8">
+                        <th>Nome</th>
+                        <th>Valor</th>
+                        <th>Estoque</th>
+                        <th>Dados</th>
+                    </tr>
+                </thead>
+
+                <tbody className="w-full overflow-y-scroll rounded-b-lg">
                     {dadosFiltrados?.map((item) => (
-                        <ul
-                            className="grid grid-rows-2 grid-cols-4 px-10
+                        <tr
+                            className="grid grid-rows-2 grid-cols-4 px-2 lg:px-10
                           w-full py-3 bg-blue-200 border-b border-white
                           font-medium font-sans hover:bg-white "
                             key={item.id}
                         >
                             <>
-                                <li>{item?.nome}</li>
-                                <li>{item?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
-                                <li>{item.estoque}</li>
+                                <td>{item?.nome}</td>
+                                <td>{item?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                <td>{item.estoque}</td>
                                 <Link to={`/produto/${item.id}`} target="_blank" className="hover:cursor-pointer">
                                     Editar
                                 </Link>
                             </>
-                        </ul>
+                        </tr>
                     ))}
-                </div>
-            </div>
-
-            <button className="hidden md:block h-4/6 w-7/8 text-1xl col-span-2 bg-blue-500! hidden!">
-                Compartilhar
-            </button>
-
-            <div
-                className="p-4 w-full h-full hidden md:flex flex-col justify-center items-center gap-2 col-span-3 col-start-1 row-start-3 shadow-xl/30
-                bg-radial from-blue-400/20 to-blue-500/20 border border-white rounded-3xl"
-            >
-                <h1 className="text-3xl! text-black! font-sans">Total de vendas:</h1>
-
-                <div className="text-1xl bg-white/30 w-full h-full text-center rounded-3xl flex justify-center items-center">
-                    <span className="text-red-600 font-extrabold font-sans text-2xl">
-                        {firstProduct?.quantidadeVendida || 0} Produtos vendidos
-                    </span>
-                </div>
-            </div>
+                </tbody>
+            </table>
 
             <button
-                className="h-4/6 w-full col-span-7 col-start-1 row-start-4 bg-blue-500! py-4! shadow-xl/30 rounded-3xl text-white"
+                className="h-3/4 w-full bg-blue-500! py-4! lg:relative lg:-top-4
+                col-start-4 col-span-4 row-start-5
+                shadow-xl/30 rounded-3xl text-white"
                 onClick={() => render('new')}
             >
                 Novo Produto
             </button>
+
+
+            <h1 className='md:hidden'>_____</h1>
+
         </div>
     );
 };

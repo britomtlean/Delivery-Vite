@@ -10,7 +10,7 @@ declare global {
     }
 }
 
-function Delivery() {
+export default function Live() {
 
     //CONTEXT
     const { notify, setNotify } = useContext(Context)!;
@@ -211,7 +211,7 @@ function Delivery() {
 
                     <div
                         id="mensagens"
-                        className="mt-6 mb-6 flex h-[48vh] w-[80%] lg:w-[50%] flex-col gap-3 overflow-y-auto rounded-2xl border border-white/10 bg-slate-200/40 p-10 py-8 shadow-lg backdrop-blur-md"
+                        className="mt-6 mb-6 flex h-[48vh] w-full lg:w-[70%] flex-col gap-3 overflow-y-auto rounded-2xl border border-white/10 bg-slate-200/40 p-10 py-8 shadow-lg backdrop-blur-md"
                     >
                         {(notify ?? []).map((pedido) => (
                             <div
@@ -271,7 +271,7 @@ function Delivery() {
                                     >
                                         <button
                                         className="flex-1"
-                                        onClick={() => {            
+                                        onClick={() => {
                                             setNotify((): any => {
                                             const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
                                             return atualizarPedidos;
@@ -286,5 +286,3 @@ function Delivery() {
         </div>
     );
 }
-
-export default Delivery;

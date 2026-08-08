@@ -1,16 +1,18 @@
 import { useState, useContext, useEffect, type JSX } from 'react';
 
 import Pendentes from './Pendentes';
-import Concluido from './Concluidos';
-import Carrosel from './Produtos';
-import Delivery from './Delivery';
+import Confirmados from './Confirmados';
+import Produtos from './Produtos';
+import Live from './Live';
 import CriarProduto from './CriarProduto';
+import Loading from '../../components/All/Loading';
+
 import { Context } from '../../context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../../components/All/Loading';
 import { deleteToken } from '../../Services/Storage';
 
 const Home = () => {
+    
     //CONTEXT
     const { user, setUser } = useContext(Context)!;
 
@@ -31,17 +33,17 @@ const Home = () => {
     const renderComponente = (): JSX.Element => {
         switch (section) {
             case 'live':
-                return <Delivery />;
+                return <Live />;
             case 'pendentes':
                 return <Pendentes />;
             case 'confirmados':
-                return <Concluido />;
+                return <Confirmados />;
             case 'produtos':
-                return <Carrosel render={setSection} />;
+                return <Produtos render={setSection} />;
             case 'new':
                 return <CriarProduto />;
             default:
-                return <Delivery />;
+                return <Live />;
         }
     };
 
@@ -109,8 +111,8 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full w-full lg:w-[90%] 2xl:w-[80%]
-                    flex justify-center items-start pt-"
+                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%]
+                        flex justify-center items-start"
                     >
                         {renderComponente()}
                     </div>
