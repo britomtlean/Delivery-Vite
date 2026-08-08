@@ -75,3 +75,13 @@ button:hover {
             0 0 16px #ff3b3b;
     }
 }
+
+
+@media (max-width: 768px) {
+  .mobile-scale {
+    transform: scale(0.8);
+    transform-origin: top center;
+    width: 125%;
+    margin-left: -12.5%;
+  }
+}
