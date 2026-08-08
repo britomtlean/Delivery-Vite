@@ -18,7 +18,7 @@ const ProdutosDetalhes = () => {
     const [desc, setDesc] = useState<string>();
     const [valor, setValor] = useState<string>();
 
-    //Revisar possível bug
+    //Revisar possível bug 
     const [disponibilidade, setDisponibilidade] = useState<string>('true');
 
     //REFS
