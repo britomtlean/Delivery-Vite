@@ -85,6 +85,7 @@ const Home = () => {
                             >
                                 Produtos
                             </li>
+
                         </ul>
 
                         <div className="flex h-full gap-4 rounded-2xl justify-center items-center">
@@ -104,7 +105,7 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%] mobile-scale
+                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%]
                         flex justify-center items-start"
                     >
                         {renderComponente()}
