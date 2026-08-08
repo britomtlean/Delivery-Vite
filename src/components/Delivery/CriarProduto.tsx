@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FaBoxOpen } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
+import { getToken } from '../../Services/Storage';
 
 const CriarProduto = () => {
 
@@ -30,8 +31,12 @@ const CriarProduto = () => {
 
         console.log(formData);
 
+        const token = await getToken();
         const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos', {
             method: 'POST',
+            headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`,
+            },
             body: formData,
         });
 
@@ -58,11 +63,12 @@ const CriarProduto = () => {
   return (
       <div
           className="w-full h-full
-    flex flex-col justify-start items-center gap-4 p-4"
+            flex flex-col justify-start items-center gap-4 p-4"
       >
           <div className="w-full text-center font-black">
               <h1 className="text-black!">Criar Produto</h1>
           </div>
+          
           <div className="w-full h-full flex justify-center pt-4 px-4 gap-10">
               <div className="flex-1">
                   <FaBoxOpen className="w-full text-9xl text-gray-200" />

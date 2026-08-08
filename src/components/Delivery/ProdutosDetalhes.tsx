@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { Product } from '../../Types/Types';
+import { getToken } from '../../Services/Storage';
 
 const ProdutosDetalhes = () => {
 
@@ -118,9 +119,12 @@ const ProdutosDetalhes = () => {
 
     const getProducts = async () => {
 
-        const res = await fetch(
-            'https://dotnet-webapi-base-production.up.railway.app/api/Produtos'
-        );
+        const token = await getToken();
+        const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/Produtos', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`,
+            },
+        });
         const data = await res.json();
 
         const produtoFiltred = data.find((array: Product) => array.id == id);
@@ -140,13 +144,13 @@ const ProdutosDetalhes = () => {
 
     return (
         <div
-            className="w-5/6 max-w-[1380px] h-screen
-                        flex justify-center items-start"
+            className="w-[90%] lg:w-[80%] h-full
+            flex justify-center items-start"
         >
             <div
                 className={`flex justify-start items-center flex-col
-                            h-3/4  py-15 mt-8 rounded-lg gap-4 border border-white transition-opacity ease-out duration-1000
-                            ${display ? 'flex-3 opacity-70' : 'w-1/2'}`}
+                            h-3/4  py-15 mt-2 rounded-lg gap-4 transition-opacity ease-out duration-1000
+                            ${display ? 'flex-3 opacity-70' : 'w-[90%] lg:w-[50%]'}`}
             >
                 <img className="flex-5 max-w-4/5 max-h-[280px] rounded-3xl" src={`${produto?.imagem}`} alt="" />
                 <h2 className="font-bold text-2xl">{produto?.nome}</h2>
@@ -155,8 +159,9 @@ const ProdutosDetalhes = () => {
                     {produto?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </h2>
                 <h2 className="font-bold text-2xl">{produto?.categoria}</h2>
+
                 <button
-                    className="w-3/5 h-1/8 bg-cyan-600!"
+                    className="w-3/5 h-1/8 bg-cyan-600! hidden lg:block"
                     onClick={() => {
                         displayFunction();
                     }}
@@ -177,7 +182,7 @@ const ProdutosDetalhes = () => {
                 className={`flex justify-start items-center flex-col
                             h-3/4 flex-1 py-12 mt-8 rounded-lg gap-4 border transition-all ease-out duration-1000
 
-                            ${display ? 'flex flex-5 shadow-xl/30 bg-red-500 border-white shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
+                            ${display ? 'flex flex-5 shadow-xl/30 bg-gray-300 border-white shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
             >
                 <h1 className="font-bold text-black opacity-100 text-5xl!">Edição</h1>
                 <form
