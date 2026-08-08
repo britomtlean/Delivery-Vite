@@ -73,11 +73,15 @@ const ProdutosDetalhes = () => {
 
         if(confirm != 'CONFIRMO') return
 
+        const token = await getToken();
         const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/Produtos/delete/${id}`, {
             method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`,
+            },
         });
 
-        const data = await res.json();
+        const data = await res.text();
 
         if(!res.ok)
         {throw Error(data)}
@@ -98,9 +102,12 @@ const ProdutosDetalhes = () => {
         produto.append('valor', valor!);
         produto.append('disponibilidade', disponibilidade!);
 
+        const token = await getToken();
         const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/Produtos/update/${id}`, {
             method: 'PUT',
-            credentials: 'include',
+            headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`,
+            },
             body: produto,
         });
 

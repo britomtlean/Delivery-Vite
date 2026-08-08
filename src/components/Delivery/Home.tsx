@@ -12,20 +12,20 @@ import { useNavigate } from 'react-router-dom';
 import { deleteToken } from '../../Services/Storage';
 
 const Home = () => {
-    
+
     //CONTEXT
-    const { user, setUser } = useContext(Context)!;
+    const { login, setLogin } = useContext(Context)!;
 
     //ROUTER
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user == null) {
+        if (login == null) {
             setTimeout(() => {
                 navigate('/auth');
             }, 2000);
         }
-    }, [user]);
+    }, [login]);
 
     //NAVEGAÇÃO
     const [section, setSection] = useState<string>('live');
@@ -41,7 +41,7 @@ const Home = () => {
             case 'produtos':
                 return <Produtos render={setSection} />;
             case 'new':
-                return <CriarProduto />;
+                return <CriarProduto render={setSection}/>;
             default:
                 return <Live />;
         }
@@ -49,7 +49,7 @@ const Home = () => {
 
     return (
         <>
-            {user ? (
+            {login ? (
                 <>
                     <header
                         className="w-full h-[10vh] gap-5 py-4 flex justify-center items-center px-[5%] mb-4 bg-[rgb(48,62,83)]
@@ -86,20 +86,14 @@ const Home = () => {
                                 Produtos
                             </li>
 
-                            <li
-                                onClick={() => setSection('estoque')}
-                                className="hidden md:block ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
-                            >
-                                Estoque
-                            </li>
                         </ul>
 
                         <div className="flex h-full gap-4 rounded-2xl justify-center items-center">
-                            <h3 className="text-white font-bold text-[0.8rem] hidden">{user?.nome}</h3>
+                            <h3 className="text-white font-bold text-[0.8rem] hidden">{login?.nome}</h3>
                             <button
                                 className=""
                                 onClick={() => {
-                                    setUser((prev) => {
+                                    setLogin((prev) => {
                                         deleteToken();
                                         return null;
                                     });

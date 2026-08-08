@@ -210,7 +210,7 @@ const Produtos = ({ render }: Prop) => {
                         ) : (
                             <>
                                 <img
-                                    className="max-w-[70%] max-h-[50%]
+                                    className="max-w-[80%] max-h-[50%]
                                 object-contain rounded-2xl
                                 transition-transform hover:scale-105"
                                     src={firstProduct.imagem}
@@ -243,15 +243,15 @@ const Produtos = ({ render }: Prop) => {
             </div>
 
             <div
-                className="p-4 w-8/9 h-4/5 hidden relative -top-10
-                lg:flex flex-col justify-center items-center gap-2
+                className="p-4 h-full w-8/9 lg:h-4/5 lg:relative -top-10
+                flex flex-col justify-center items-center gap-2
                 col-start-1 col-span-3 row-start-4 row-span-2
                 bg-radial from-blue-400/20 to-blue-500/20 shadow-xl/30 border border-white rounded-3xl
                 hover:border-[3px] hover:border-[#64ffdd]"
             >
                 <h1 className="text-3xl! text-black! font-sans font-medium">Total de vendas:</h1>
 
-                <div className="text-1xl bg-white/30 w-full h-full text-center rounded-3xl flex justify-center items-center">
+                <div className="text-1xl bg-white/30 w-full h-full py-8 text-center rounded-3xl flex justify-center items-center">
                     <h2 className="text-red-600 font-extrabold font-sans text-2xl">
                         {firstProduct?.quantidadeVendida || 0} Produtos vendidos
                     </h2>

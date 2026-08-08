@@ -11,13 +11,13 @@ export type Product = {
 };
 
 export type LoginType = {
-    cpf: string;
+    user: string;
     password: string;
 };
 
 export type User = {
     id?: string;
     nome: string;
-    cpf: string;
+    user: string;
     senha: string;
 };

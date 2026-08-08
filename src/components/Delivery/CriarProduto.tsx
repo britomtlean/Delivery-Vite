@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import { FaBoxOpen } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import { getToken } from '../../Services/Storage';
 
-const CriarProduto = () => {
+type Prop = {
+    render: Dispatch<SetStateAction<string>>;
+};
+
+const CriarProduto = ({render}: Prop) => {
 
     const navigate = useNavigate();
 
     const [nome, setNome ] = useState<string>();
-    const [valor, setValor] = useState<number>();
-    const [estoque, setEstoque] = useState<number>();
+    const [valor, setValor] = useState<string>();
+    const [estoque, setEstoque] = useState<string>();
     const [categoria, setCategoria] = useState<string>();
     const [imagem, setImagem] = useState<string>('');
     const [file, setFile] = useState<File | undefined>();
@@ -21,8 +25,8 @@ const CriarProduto = () => {
         const formData = new FormData();
 
         formData.append('nome', nome!);
-        formData.append('valor', valor!.toString());
-        formData.append('estoque', estoque!.toString());
+        formData.append('valor', valor!.replace(',', '.'));
+        formData.append('estoque', estoque!);
         formData.append('categoria', categoria!);
 
         if (file) {
@@ -45,7 +49,7 @@ const CriarProduto = () => {
         if(res.ok)
         {
             alert('Produto criado com sucesso!')
-            navigate('/');
+            render("produtos");
         }
 
         console.log(data)
@@ -68,7 +72,7 @@ const CriarProduto = () => {
           <div className="w-full text-center font-black">
               <h1 className="text-black!">Criar Produto</h1>
           </div>
-          
+
           <div className="w-full h-full flex justify-center pt-4 px-4 gap-10">
               <div className="flex-1">
                   <FaBoxOpen className="w-full text-9xl text-gray-200" />
@@ -98,10 +102,12 @@ const CriarProduto = () => {
                       type="text"
                       name="nome"
                       id=""
-                      placeholder="Escolha um valor..."
+                      value={valor}
+                      placeholder="Escolha um valor. EX: 19,90"
                       className="bg-gray-200 p-4 w-full rounded-lg text-center"
                       onChange={(e) => {
-                          setValor(Number(e.target.value));
+                          const value = e.target.value.replace(/[^0-9,]/g, '');
+                          setValor(value)
                       }}
                   />
 
@@ -110,15 +116,17 @@ const CriarProduto = () => {
                       type="text"
                       name="estoque"
                       id=""
+                      value={estoque}
                       placeholder="Insira a quantidade de estoque..."
                       className="bg-gray-200 p-4 w-full rounded-lg text-center"
                       onChange={(e) => {
-                          setEstoque(Number(e.target.value));
+                            const value = e.target.value.replace(/[^0-9]/g, '');
+                            setEstoque(value);
                       }}
                   />
 
                   <select
-                     defaultValue={''}
+                      defaultValue={''}
                       required
                       onChange={(e) => {
                           setCategoria(e.target.value);
@@ -139,6 +147,7 @@ const CriarProduto = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleImagem}
+                      required
                   />
 
                   <button className="bg-green-500! px-4 py-5! w-full rounded-lg text-center" type="submit">

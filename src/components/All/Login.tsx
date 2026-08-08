@@ -9,18 +9,18 @@ import type { LoginType, User } from '../../Types/Types';
 
 const Login = () => {
     //CONTEXT
-    const { setUser } = useContext(Context)!;
+    const { setLogin } = useContext(Context)!;
 
     //ROUTER
     const navigate = useNavigate();
 
     //STATE
-    const [cpf, setCPF] = useState<string>('');
+    const [user, setUser] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
 
-    const handleCPFChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setCPF(e.target.value);
+    const handleUserChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUser(e.target.value);
     };
 
     const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,8 +40,8 @@ const Login = () => {
                     )
                         .then((profile: User) => {
                             // SE TOKEN FOR VALIDADO GUARDADO DADOS DO USUARIO NO CONTEXT
-                            console.log('usuario autenticado:', profile);
-                            setUser(profile);
+                            console.log('usuario autenticado:');
+                            setLogin(profile);
                             navigate('/');
                         })
                         .catch((er: Error) => {
@@ -63,22 +63,22 @@ const Login = () => {
     const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const user: LoginType = {
-            cpf: cpf,
+        const login: LoginType = {
+            user: user,
             password: password,
         };
 
         setLoading(true);
 
-        await AuthData.login(user, 'https://dotnet-webapi-base-production.up.railway.app/login')
+        await AuthData.login(login, 'https://dotnet-webapi-base-production.up.railway.app/login')
             .then(async (token: string) => {
                 await AuthData.getProfile(
                     token,
                     'https://dotnet-webapi-base-production.up.railway.app/api/usuario/profile'
                 )
                     .then((profile: User) => {
-                        console.log('usuario autenticado:', profile);
-                        setUser(profile);
+                        console.log('usuario autenticado:');
+                        setLogin(profile);
                         navigate('/');
                     })
                     .catch((er: Error) => alert(er));
@@ -105,9 +105,9 @@ const Login = () => {
             >
                 <input
                     type="text"
-                    placeholder="Insira o CPF"
-                    value={cpf}
-                    onChange={handleCPFChange}
+                    placeholder="Insira o usuário"
+                    value={user}
+                    onChange={handleUserChange}
                     className="p-3 rounded-lg border border-gray-300 bg-slate-200
                         focus:outline-none
                         focus:border-2 focus:border-cyan-300
