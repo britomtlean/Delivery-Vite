@@ -89,21 +89,25 @@ export default function Live() {
 
         //////////////////// START \\\\\\\\\\\\\\\\\\\\\
 
-connection.serverTimeoutInMilliseconds = 30000;
-connection.keepAliveIntervalInMilliseconds = 5000;
+        connection.serverTimeoutInMilliseconds = 30000;
+        connection.keepAliveIntervalInMilliseconds = 5000;
 
 
 
-        connection.onclose((error) => {
+        connection.onclose(async (error) => {
             console.error('🔴 DESCONNECTED:', error);
+            if (connection.state !== 'Disconnected') {
+                await connection.stop();
+            }
         });
 
         connection.onreconnecting((error) => {
             console.warn('🟡 RECONNECTING:', error);
         });
 
-        connection.onreconnected((connectionId) => {
+        connection.onreconnected(async (connectionId) => {
             console.log('🟢 RECONNECTED:', connectionId);
+            await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
         });
 
 
