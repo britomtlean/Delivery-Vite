@@ -40,7 +40,7 @@ const Login = () => {
                     )
                         .then((profile: User) => {
                             // SE TOKEN FOR VALIDADO GUARDADO DADOS DO USUARIO NO CONTEXT
-                            console.log('usuario autenticado:');
+                            console.log('usuario autenticado');
                             setLogin(profile);
                             navigate('/');
                         })

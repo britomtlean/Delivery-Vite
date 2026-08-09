@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { Context } from '../../context/ContextProvider';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import somPedido from '../../assets/meme-fail-alert-locran-1-00-01.mp3';
 
 declare global {
@@ -13,7 +12,7 @@ declare global {
 export default function Live() {
 
     //CONTEXT
-    const { notify, setNotify } = useContext(Context)!;
+    const { notify, setNotify, connection ,setConnection } = useContext(Context)!;
 
     /////////////////////// AUDIO \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -21,10 +20,122 @@ export default function Live() {
     const [somAtivado, setSomAtivado] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const ativarSom = async () => {
-        try {
-            const audio = new Audio(somPedido);
+    //////////////////// FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+    const notification = async () => {
+        const permission = await Notification.requestPermission();
+
+        if (permission === 'granted') {
+            console.log('Permissão concedida');
+        }
+    };
+
+    const tocarSom = async () => {
+        try {
+            if (!audioRef.current) return;
+
+            audioRef.current.currentTime = 0;
+
+            await audioRef.current.play();
+
+            console.log('🔊 Tocando');
+        } catch (err) {
+            console.error('Erro ao tocar:', err);
+        }
+    };
+
+    const conectar = async () => {
+        if (!connection) return;
+
+        // Solicita a chave
+        const chaveAcesso = prompt('Digite a chave de acesso');
+        if (chaveAcesso === null) return;
+
+        /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
+
+        const onErro = (mensagem: string) => {
+            console.error('❌ Servidor:', mensagem);
+            alert(mensagem);
+        };
+
+        const onReceiveMessage = (message: any, sala: string) => {
+            console.log('📩 Servidor - ', message);
+            tocarSom();
+            setSala(sala);
+
+            setNotify((prev) => {
+                if (prev == null) {
+                    return [message];
+                }
+                const arrayPedidos = [message, ...prev!];
+                console.log('Pedidos recentes:', arrayPedidos);
+                return arrayPedidos;
+            });
+        };
+
+        //////////////////////////////////////////////
+
+        //////////////// LISTENERS \\\\\\\\\\\\\\\\\
+
+        connection.on('Erro', onErro);
+
+        connection.on('Conectado', (msg: string) => {
+            alert(msg);
+        });
+
+        connection.on('ReceiveMessage', onReceiveMessage);
+
+        /////////////////////////////////////////////////////
+
+        //////////////////// START \\\\\\\\\\\\\\\\\\\\\
+
+connection.serverTimeoutInMilliseconds = 30000;
+connection.keepAliveIntervalInMilliseconds = 5000;
+
+
+
+        connection.onclose((error) => {
+            console.error('🔴 DESCONNECTED:', error);
+        });
+
+        connection.onreconnecting((error) => {
+            console.warn('🟡 RECONNECTING:', error);
+        });
+
+        connection.onreconnected((connectionId) => {
+            console.log('🟢 RECONNECTED:', connectionId);
+        });
+
+
+        connection
+            .start()
+            .then(async () => {
+                await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
+            })
+            .catch(async (err) => {
+
+                console.error('Erro na conexão:', err);
+                connection.off('Erro');
+                connection.off('Conectado');
+                connection.off('ReceiveMessage');
+
+                alert('Erro ao iniciar conexão');
+
+                if (connection.state !== 'Disconnected') {
+                    await connection.stop();
+                }
+            });
+
+        //////////////////////////////////////////////
+    };
+
+    const enable = async () => {
+
+        try {
+
+            notification();
+
+            const audio = new Audio(somPedido);
             audio.volume = 1;
 
             // força carregamento
@@ -43,90 +154,15 @@ export default function Live() {
             setSomAtivado(true);
 
             console.log('✅ Som ativado');
+
+            await conectar();
+
         } catch (err) {
-            console.error('Erro ao ativar som:', err);
-        }
-    };
-
-    const tocarSom = async () => {
-        try {
-            if (!audioRef.current) return;
-
-            audioRef.current.currentTime = 0;
-
-            await audioRef.current.play();
-
-            console.log('🔊 Tocando');
-        } catch (err) {
-            console.error('Erro ao tocar:', err);
+            console.error('Erro:', err);
         }
     };
 
     ///////////////////////////////////////////////////////////
-
-    /////////////////////// SIGNALR \\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-    // 1 - CRIAR STATE PARA RECEBER CONEXÃO
-    const [connection, setConnection] = useState<HubConnection | null>(null);
-
-    // 2 - CONFIGURAR CONEXÃO APÓS PRIMEIRA RENDERIZAÇÃO
-    useEffect(() => {
-        const newConnection = new HubConnectionBuilder()
-            .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
-            .withAutomaticReconnect()
-            .build();
-
-        setConnection(newConnection);
-
-        const notify = async () => {
-            const permission = await Notification.requestPermission();
-
-            if (permission === 'granted') {
-                console.log('Permissão concedida');
-            }
-        };
-
-        notify();
-    }, []);
-
-    // 3 - INICIAR CONEXÃO E RECEBER MENSAGENS
-    useEffect(() => {
-        if (!connection) return;
-
-        connection
-            .start()
-            .then(() => {
-                console.log('✅ Conectado ao Delivery');
-
-                connection.invoke('EntrarSala', 'loja');
-
-                // ESCUTA MENSAGEM DO SERVIDOR
-                connection.on('ReceiveMessage', (message: any, sala: string) => {
-                    console.log('📩 Servidor - ', message);
-                    tocarSom();
-                    setSala(sala);
-
-                    setNotify((prev) => {
-                        if (prev == null) {
-                            return [message];
-                        }
-                        const arrayPedidos = [message, ...prev!];
-                        console.log('Pedidos recentes:', arrayPedidos);
-                        return arrayPedidos;
-                    });
-
-                });
-            })
-            .catch((err) => {
-                console.error('Erro na conexão:', err);
-            });
-
-        return () => {
-            connection.invoke('SairSala', 'loja').finally(() => connection.stop()); //SE ALTERAR A CONEXÃO EXECUTA O RETURN
-        };
-    }, [connection]);
-
-    /////////////////////////////////////////////////////////////
 
     /////////////////////////// ACTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     const confirmOrder = async (pedido: Record<string, any>) => {
@@ -192,10 +228,10 @@ export default function Live() {
         <div className="h-full w-full overflow-hidden flex flex-col items-center">
             <>
                 <button
-                    className="mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95"
-                    onClick={ativarSom}
+                    className={`mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95`}
+                    onClick={enable}
                 >
-                    Ativar Som
+                    Conectar Delivery
                 </button>
 
                 <section className="flex w-[90%] flex-col items-center">
@@ -270,12 +306,18 @@ export default function Live() {
                                         className={`${pedido.status == true ? 'flex justify-between items-center gap-24 mt-2 px-8' : 'hidden'}`}
                                     >
                                         <button
-                                        className="flex-1"
-                                        onClick={() => {
-                                            setNotify((): any => {
-                                            const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
-                                            return atualizarPedidos;
-                                        });}}>OK</button>
+                                            className="flex-1"
+                                            onClick={() => {
+                                                setNotify((): any => {
+                                                    const atualizarPedidos = notify?.filter(
+                                                        (array) => array.id != pedido.id
+                                                    );
+                                                    return atualizarPedidos;
+                                                });
+                                            }}
+                                        >
+                                            OK
+                                        </button>
                                     </div>
                                 </ul>
                             </div>

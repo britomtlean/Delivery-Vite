@@ -1,6 +1,7 @@
 import { useState, createContext } from 'react';
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'; //TIPAGEM PROP
 import type { User } from '../Types/Types';
+import type { HubConnection } from '@microsoft/signalr';
 
 export type ContextType = {
     theme: string;
@@ -14,7 +15,9 @@ export type ContextType = {
     contato: string;
     setContato: React.Dispatch<React.SetStateAction<string>>;
     notify: Array<Record<string, any>> | null;
-    setNotify: Dispatch<SetStateAction<Array<Record<string, any>> | null>>;
+    setNotify: React.Dispatch<SetStateAction<Array<Record<string, any>> | null>>;
+    connection: HubConnection | null;
+    setConnection: React.Dispatch<SetStateAction<HubConnection | null>>;
 };
 
 
@@ -30,9 +33,10 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [login, setLogin] = useState<User | null>(null);
     const [contato, setContato] = useState<string>('');
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
+    const [connection, setConnection] = useState<HubConnection | null>(null);
 
     return (
-        <Context.Provider value={{ theme, setTheme, status, setStatus, message, setMessage, login, setLogin, contato, setContato, notify, setNotify }}>
+        <Context.Provider value={{ theme, setTheme, status, setStatus, message, setMessage, login, setLogin, contato, setContato, notify, setNotify, connection, setConnection }}>
             {children}
         </Context.Provider>
     );

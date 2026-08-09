@@ -10,20 +10,31 @@ import Loading from '../../components/All/Loading';
 import { Context } from '../../context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
 import { deleteToken } from '../../Services/Storage';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const Home = () => {
 
     //CONTEXT
-    const { login, setLogin } = useContext(Context)!;
+    const { login, setLogin, connection, setConnection } = useContext(Context)!;
 
     //ROUTER
     const navigate = useNavigate();
 
     useEffect(() => {
+
         if (login == null) {
+            
             setTimeout(() => {
                 navigate('/auth');
             }, 2000);
+        }
+        else{
+            const newConnection = new HubConnectionBuilder()
+                .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
+                .withAutomaticReconnect()
+                .build();
+
+            setConnection(newConnection);
         }
     }, [login]);
 
