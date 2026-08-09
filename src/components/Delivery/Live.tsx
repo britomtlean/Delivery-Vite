@@ -107,7 +107,7 @@ export default function Live() {
 
         connection.onreconnected(async (connectionId) => {
             console.log('🟢 RECONNECTED:', connectionId);
-            await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
+            //await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
         });
 
 
