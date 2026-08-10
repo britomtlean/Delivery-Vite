@@ -125,7 +125,7 @@ export default function Confirmados() {
     }
 
     return (
-        <div className="flex w-[90%] h-full flex-col items-center gap-5 p-10 text-white">
+        <div className="flex w-full h-full flex-col items-center gap-5 p-10 text-white overflow-hidden">
             <h1 className="text-4xl font-bold">Gerenciamento de Vendas</h1>
 
             <div className="flex items-center gap-3">
@@ -154,8 +154,8 @@ export default function Confirmados() {
                 <div className="mt-10 text-2xl font-bold">Nenhuma venda encontrada</div>
             ) : (
                 <>
-                    <div className="overflow-auto rounded-xl border border-gray-600 bg-gray-900 shadow-2xl lg:h-[500px]">
-                        <table className="min-w-[900px]">
+                    <div className="overflow-scroll w-full rounded-xl border border-gray-600 bg-gray-900 shadow-2xl h-[800px] lg:h-[500px]">
+                        <table className="w-full">
                             <thead className="bg-gray-700">
                                 <tr className="w-full">
                                     <th className="px-6 py-4 text-center">ID</th>

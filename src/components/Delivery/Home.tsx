@@ -23,7 +23,7 @@ const Home = () => {
     useEffect(() => {
 
         if (login == null) {
-            
+
             setTimeout(() => {
                 navigate('/auth');
             }, 2000);
@@ -116,7 +116,7 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%]
+                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%] overflow-y-scroll
                         flex justify-center items-start"
                     >
                         {renderComponente()}

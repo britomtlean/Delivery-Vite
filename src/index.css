@@ -7,7 +7,8 @@
     justify-items: center;
     align-items: center;
     min-width: 320px;
-    min-height: 100vh;
+    height: 100vh;
+    padding-bottom: 50px;
     @apply h-screen w-full overflow-hidden
     /*bg-gradient-to-b from-[rgb(96,167,167)] to-[rgb(105,168,126)]*/
     /*bg-radial from-blue-400/50 to-blue-500/80

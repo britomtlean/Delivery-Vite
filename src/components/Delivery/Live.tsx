@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { Context } from '../../context/ContextProvider';
 import somPedido from '../../assets/meme-fail-alert-locran-1-00-01.mp3';
 
@@ -17,6 +17,7 @@ export default function Live() {
     /////////////////////// AUDIO \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     const [sala, setSala] = useState<string>('');
+    const [conn, setConn] = useState<boolean>(false);
     const [somAtivado, setSomAtivado] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -47,14 +48,28 @@ export default function Live() {
     const conectar = async () => {
         if (!connection) return;
 
+        if (connection.state === 'Connected') {
+            alert('Voce ja esta conectado');
+            return;
+        }
+
         // Solicita a chave
         const chaveAcesso = prompt('Digite a chave de acesso');
         if (chaveAcesso === null) return;
 
         /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
-        const onErro = (mensagem: string) => {
+        const onErro = async (mensagem: string) => {
             console.error('❌ Servidor:', mensagem);
+
+            connection.off('Erro');
+            connection.off('Conectado');
+            connection.off('ReceiveMessage');
+
+            if (connection.state !== 'Disconnected') {
+                await connection.stop();
+            }
+            setConn(false)
             alert(mensagem);
         };
 
@@ -80,6 +95,7 @@ export default function Live() {
         connection.on('Erro', onErro);
 
         connection.on('Conectado', (msg: string) => {
+            setConn(true)
             alert(msg);
         });
 
@@ -96,9 +112,16 @@ export default function Live() {
 
         connection.onclose(async (error) => {
             console.error('🔴 DESCONNECTED:', error);
+
+            connection.off('Erro');
+            connection.off('Conectado');
+            connection.off('ReceiveMessage');
+
             if (connection.state !== 'Disconnected') {
                 await connection.stop();
             }
+
+            setConn(false);
         });
 
         connection.onreconnecting((error) => {
@@ -106,10 +129,20 @@ export default function Live() {
         });
 
         connection.onreconnected(async (connectionId) => {
-            console.log('🟢 RECONNECTED:', connectionId);
-            //await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
-        });
+                console.log('🟢 RECONNECTED:', connectionId);
 
+            connection.on('Erro', onErro);
+
+            connection.on('Conectado', (msg: string) => {
+                setConn(true);
+                alert(msg);
+            });
+
+            connection.on('ReceiveMessage', onReceiveMessage);
+
+             await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
+
+        });
 
         connection
             .start()
@@ -128,6 +161,8 @@ export default function Live() {
                 if (connection.state !== 'Disconnected') {
                     await connection.stop();
                 }
+
+                setConn(false)
             });
 
         //////////////////////////////////////////////
@@ -228,11 +263,16 @@ export default function Live() {
     };
     ///////////////////////////////////////////////////////////
 
+    useEffect(() => {
+        connection?.state == "Disconnected" ? setConn(false) : setConn(true);
+    },[connection?.state])
+
     return (
         <div className="h-full w-full overflow-hidden flex flex-col items-center">
             <>
                 <button
-                    className={`mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95`}
+                    className={`mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95
+                        ${!conn ? 'block' : 'hidden'}`}
                     onClick={enable}
                 >
                     Conectar Delivery
