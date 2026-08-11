@@ -12,12 +12,10 @@ declare global {
 export default function Live() {
 
     //CONTEXT
-    const { notify, setNotify, connection ,setConnection } = useContext(Context)!;
+    const { notify, setNotify, connection, setConnection, connectionStatus, setConnectionStatus, online, setOnline } = useContext(Context)!;
 
     /////////////////////// AUDIO \\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-    const [sala, setSala] = useState<string>('');
-    const [conn, setConn] = useState<boolean>(false);
     const [somAtivado, setSomAtivado] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -46,124 +44,23 @@ export default function Live() {
     };
 
     const conectar = async () => {
+
         if (!connection) return;
 
-        if (connection.state === 'Connected') {
-            alert('Voce ja esta conectado');
+        //AJUSTAR
+        if (connection.state === 'Disconnected' || connectionStatus != true) {
+            alert('Conexão indisponível');
             return;
         }
 
-        // Solicita a chave
-        const chaveAcesso = prompt('Digite a chave de acesso');
-        if (chaveAcesso === null) return;
+        if(online){
+            await connection.invoke('SairSala', 'loja');
+            setOnline(false);
+            alert("Loja offline")
+            return
+        }
 
-        /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
-
-        const onErro = async (mensagem: string) => {
-            console.error('❌ Servidor:', mensagem);
-
-            connection.off('Erro');
-            connection.off('Conectado');
-            connection.off('ReceiveMessage');
-
-            if (connection.state !== 'Disconnected') {
-                await connection.stop();
-            }
-            setConn(false)
-            alert(mensagem);
-        };
-
-        const onReceiveMessage = (message: any, sala: string) => {
-            console.log('📩 Servidor - ', message);
-            tocarSom();
-            setSala(sala);
-
-            setNotify((prev) => {
-                if (prev == null) {
-                    return [message];
-                }
-                const arrayPedidos = [message, ...prev!];
-                console.log('Pedidos recentes:', arrayPedidos);
-                return arrayPedidos;
-            });
-        };
-
-        //////////////////////////////////////////////
-
-        //////////////// LISTENERS \\\\\\\\\\\\\\\\\
-
-        connection.on('Erro', onErro);
-
-        connection.on('Conectado', (msg: string) => {
-            setConn(true)
-            alert(msg);
-        });
-
-        connection.on('ReceiveMessage', onReceiveMessage);
-
-        /////////////////////////////////////////////////////
-
-        //////////////////// START \\\\\\\\\\\\\\\\\\\\\
-
-        connection.serverTimeoutInMilliseconds = 30000;
-        connection.keepAliveIntervalInMilliseconds = 5000;
-
-
-
-        connection.onclose(async (error) => {
-            console.error('🔴 DESCONNECTED:', error);
-
-            connection.off('Erro');
-            connection.off('Conectado');
-            connection.off('ReceiveMessage');
-
-            if (connection.state !== 'Disconnected') {
-                await connection.stop();
-            }
-
-            setConn(false);
-        });
-
-        connection.onreconnecting((error) => {
-            console.warn('🟡 RECONNECTING:', error);
-        });
-
-        connection.onreconnected(async (connectionId) => {
-                console.log('🟢 RECONNECTED:', connectionId);
-
-            connection.on('Erro', onErro);
-
-            connection.on('Conectado', (msg: string) => {
-                setConn(true);
-                alert(msg);
-            });
-
-            connection.on('ReceiveMessage', onReceiveMessage);
-
-             await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
-
-        });
-
-        connection
-            .start()
-            .then(async () => {
-                await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: chaveAcesso }));
-            })
-            .catch(async (err) => {
-
-                console.error('Erro na conexão:', err);
-                connection.off('Erro');
-                connection.off('Conectado');
-                connection.off('ReceiveMessage');
-
-                alert('Erro ao iniciar conexão');
-
-                if (connection.state !== 'Disconnected') {
-                    await connection.stop();
-                }
-
-                setConn(false)
-            });
+        await connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: 'delivery1234' }));
 
         //////////////////////////////////////////////
     };
@@ -221,7 +118,6 @@ export default function Live() {
             }
 
             console.log(data);
-            alert(data);
 
             setNotify((): any => {
                 const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
@@ -229,7 +125,6 @@ export default function Live() {
             });
         } catch (err) {
             console.error(err);
-            alert('Erro ao enviar pedido');
         }
     };
 
@@ -250,7 +145,6 @@ export default function Live() {
             }
 
             console.log(data);
-            alert(data);
 
             setNotify((): any => {
                 const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
@@ -258,25 +152,112 @@ export default function Live() {
             });
         } catch (err) {
             console.error(err);
-            alert('Erro ao enviar pedido');
         }
     };
     ///////////////////////////////////////////////////////////
 
     useEffect(() => {
-        connection?.state == "Disconnected" ? setConn(false) : setConn(true);
-    },[connection?.state])
+
+        const conectar = async () => {
+
+            if (!connection) return;
+
+            connection.serverTimeoutInMilliseconds = 30000;
+            connection.keepAliveIntervalInMilliseconds = 5000;
+
+            /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
+
+            const onErro = async (mensagem: string) => {
+                console.error('❌ Servidor:', mensagem);
+                setOnline(false);
+                console.log(mensagem);
+            };
+
+            const onReceiveMessage = (message: any, sala: string) => {
+                console.log('📩 Servidor - ', message);
+                tocarSom();
+
+                setNotify((prev) => {
+                    if (prev == null) {
+                        return [message];
+                    }
+                    const arrayPedidos = [message, ...prev!];
+                    console.log('Pedidos recentes:', arrayPedidos);
+                    return arrayPedidos;
+                });
+            };
+
+            //////////////////////////////////////////////
+
+            //////////////// LISTENERS \\\\\\\\\\\\\\\\\
+
+            connection.on('Erro', onErro);
+
+            connection.on('Conectado', (msg: string) => {
+                setOnline(true);
+                console.log(msg);
+            });
+
+            connection.on('ReceiveMessage', onReceiveMessage);
+
+            /////////////////////////////////////////////////////
+
+
+        connection.onclose(async (error) => {
+
+            console.error('🔴 DESCONNECTED:', error);
+
+            if (connection.state !== 'Disconnected') {
+                await connection.stop();
+            }
+
+            setConnectionStatus(false);
+            setOnline(false);
+        });
+
+        connection.onreconnecting((error) => {
+            console.warn('🟡 RECONNECTING:', error);
+        });
+
+        connection.onreconnected(async (connectionId) => {
+
+            console.log('🟢 RECONNECTED:', connectionId);
+            setConnectionStatus(true);
+        });
+
+
+
+            ///////////////////////////////////////////////////
+
+            connection
+                ?.start()
+                .then(() => {
+                    setConnectionStatus(true);
+                })
+                .catch(() => {
+                    setConnectionStatus(false);
+                    alert("Erro ao realizar conexção")
+                });
+        }
+
+        if(connection?.state === "Connected") return
+
+        conectar();
+
+    },[connection])
 
     return (
         <div className="h-full w-full overflow-hidden flex flex-col items-center">
             <>
-                <button
-                    className={`mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95
-                        ${!conn ? 'block' : 'hidden'}`}
-                    onClick={enable}
-                >
-                    Conectar Delivery
-                </button>
+                <div className="flex w-1/2 justify-center gap-4">
+                    <button
+                        className={`mb-15 rounded-lg bg-red-500! px-4 py-2 text-base font-bold text-white active:scale-95
+                        `}
+                        onClick={enable}
+                    >
+                        {online ? "Desconectar" : "Conectar"}
+                    </button>
+                </div>
 
                 <section className="flex w-[90%] flex-col items-center">
                     <h1

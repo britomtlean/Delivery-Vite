@@ -15,7 +15,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 const Home = () => {
 
     //CONTEXT
-    const { login, setLogin, connection, setConnection } = useContext(Context)!;
+    const { login, setLogin, setConnection, connectionStatus, setConnectionStatus } = useContext(Context)!;
 
     //ROUTER
     const navigate = useNavigate();
@@ -27,15 +27,17 @@ const Home = () => {
             setTimeout(() => {
                 navigate('/auth');
             }, 2000);
-        }
-        else{
-            const newConnection = new HubConnectionBuilder()
-                .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
-                .withAutomaticReconnect()
-                .build();
 
-            setConnection(newConnection);
+            return;
         }
+
+        const newConnection = new HubConnectionBuilder()
+            .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
+            .withAutomaticReconnect()
+            .build();
+
+        setConnection(newConnection);
+
     }, [login]);
 
     //NAVEGAÇÃO
@@ -96,11 +98,26 @@ const Home = () => {
                             >
                                 Produtos
                             </li>
-
                         </ul>
 
                         <div className="flex h-full gap-4 rounded-2xl justify-center items-center">
                             <h3 className="text-white font-bold text-[0.8rem] hidden">{login?.nome}</h3>
+
+                            <div className="flex gap-2">
+                                <h4 className="font-light font-sans text-white hidden lg:block">
+                                    {connectionStatus
+                                        ? 'Online'
+                                        : connectionStatus == false
+                                          ? 'Offline'
+                                          : 'Conectando...'}
+                                </h4>
+
+                                <div
+                                    className={`w-[25px] h-[25px] rounded-full border border-white
+                                ${connectionStatus ? 'bg-green-600' : connectionStatus == false ? 'bg-red-600' : 'bg-yellow-600'}`}
+                                ></div>
+                            </div>
+
                             <button
                                 className=""
                                 onClick={() => {
@@ -116,7 +133,7 @@ const Home = () => {
                     </header>
 
                     <div
-                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%] overflow-y-scroll
+                        className="h-full lg:h-[85vh] w-[95%] lg:w-[90%] 2xl:w-[80%] overflow-y-scroll lg:overflow-y-hidden
                         flex justify-center items-start"
                     >
                         {renderComponente()}

@@ -18,6 +18,10 @@ export type ContextType = {
     setNotify: React.Dispatch<SetStateAction<Array<Record<string, any>> | null>>;
     connection: HubConnection | null;
     setConnection: React.Dispatch<SetStateAction<HubConnection | null>>;
+    connectionStatus: boolean | null;
+    setConnectionStatus: React.Dispatch<SetStateAction<boolean | null>>;
+    online: boolean;
+    setOnline: React.Dispatch<SetStateAction<boolean>>;
 };
 
 
@@ -30,13 +34,36 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [theme, setTheme] = useState<string>('Default');
     const [status, setStatus] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('Hello Context');
-    const [login, setLogin] = useState<User | null>(null);
     const [contato, setContato] = useState<string>('');
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
+    const [login, setLogin] = useState<User | null>(null);
     const [connection, setConnection] = useState<HubConnection | null>(null);
+    const [connectionStatus, setConnectionStatus] = useState<boolean |null>(null);
+    const [online, setOnline] = useState<boolean>(false);
 
     return (
-        <Context.Provider value={{ theme, setTheme, status, setStatus, message, setMessage, login, setLogin, contato, setContato, notify, setNotify, connection, setConnection }}>
+        <Context.Provider
+            value={{
+                theme,
+                setTheme,
+                status,
+                setStatus,
+                message,
+                setMessage,
+                login,
+                setLogin,
+                contato,
+                setContato,
+                notify,
+                setNotify,
+                connection,
+                setConnection,
+                connectionStatus,
+                setConnectionStatus,
+                online,
+                setOnline
+            }}
+        >
             {children}
         </Context.Provider>
     );

@@ -167,7 +167,7 @@ const Produtos = ({ render }: Prop) => {
         <div
             className="w-full h-full border-t-2 border-white py-20
             flex flex-col justify-start items-center overflow-y-scroll gap-10
-            lg:overflow-hidden lg:p-10 lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-y-5 lg:gap-x-8"
+            lg:overflow-hidden lg:p-10 lg:grid lg:grid-cols-7 lg:grid-rows-5 lg:gap-y-5 lg:gap-x-8 lg:overflow-y-hidden"
         >
             <div className="w-full h-3/5 lg:h-3/4 lg:w-8/9 row-start-1 row-span-3 col-start-1 col-span-3 relative -top-10">
                 <h1
@@ -314,9 +314,7 @@ const Produtos = ({ render }: Prop) => {
                 Novo Produto
             </button>
 
-
-            <h1 className='md:hidden'>_____</h1>
-
+            <h1 className="md:hidden">_____</h1>
         </div>
     );
 };
