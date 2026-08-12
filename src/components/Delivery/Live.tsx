@@ -47,10 +47,17 @@ export default function Live() {
 
         if (!connection) return;
 
+        if(connectionStatus == null){
+            alert("Conexão indisponível");
+            return
+        }
+
         //AJUSTAR
-        if (connection.state === 'Disconnected' || connectionStatus != true) {
-            alert('Conexão indisponível');
-            return;
+        while (connection.state === 'Disconnected' || connectionStatus == false) {
+            //alert('Conexão indisponível');
+            //return;
+            console.log("Tentanto conexão...")
+            await connection.start().then(() => {setConnectionStatus(true)});
         }
 
         if(online){
@@ -158,6 +165,8 @@ export default function Live() {
 
     useEffect(() => {
 
+        console.log('Renderizou');
+
         const conectar = async () => {
 
             if (!connection) return;
@@ -205,6 +214,8 @@ export default function Live() {
 
         connection.onclose(async (error) => {
 
+            console.log('🔴 DESCONECTADO');
+
             console.error('🔴 DESCONNECTED:', error);
 
             if (connection.state !== 'Disconnected') {
@@ -212,7 +223,7 @@ export default function Live() {
             }
 
             setConnectionStatus(false);
-            setOnline(false);
+            //setOnline(false);
         });
 
         connection.onreconnecting((error) => {
@@ -223,6 +234,10 @@ export default function Live() {
 
             console.log('🟢 RECONNECTED:', connectionId);
             setConnectionStatus(true);
+
+            if(online){
+                await conectar();
+            }
         });
 
 
