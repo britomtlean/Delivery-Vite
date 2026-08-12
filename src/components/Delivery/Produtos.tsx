@@ -187,8 +187,8 @@ const Produtos = ({ render }: Prop) => {
                 >
                     <button
                         onClick={returnProduct}
-                        className="absolute left-3 z-10
-                        size-10 rounded-full h-[60px] w-[60px]
+                        className="lg:absolute left-3 z-10
+                        size-10 rounded-full h-[60px] w-[60px] mr-4
                         text-white backdrop-blur-sm
                         flex items-center justify-center
                         transition-all hover:scale-110"
@@ -231,8 +231,8 @@ const Produtos = ({ render }: Prop) => {
 
                     <button
                         onClick={nextProduct}
-                        className="absolute right-3 z-10
-                        size-10 rounded-full h-[60px] w-[60px]
+                        className="lg:absolute right-3 z-10
+                        size-10 rounded-full h-[60px] w-[60px] ml-4
                         text-white backdrop-blur-sm
                         flex items-center justify-center
                         transition-all hover:scale-110"

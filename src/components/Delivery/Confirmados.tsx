@@ -154,7 +154,7 @@ export default function Confirmados() {
                 <div className="mt-10 text-2xl font-bold">Nenhuma venda encontrada</div>
             ) : (
                 <>
-                    <div className="overflow-scroll w-full rounded-xl border border-gray-600 bg-gray-900 shadow-2xl h-[800px] lg:h-[500px]">
+                    <div className="overflow-x-scroll overflow-y-hidden w-full rounded-xl border border-gray-600 bg-gray-900 shadow-2xl h-[800px] lg:h-[500px]">
                         <table className="w-full">
                             <thead className="bg-gray-700">
                                 <tr className="w-full">
@@ -168,7 +168,7 @@ export default function Confirmados() {
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody className="w-full overflow-y-scroll border-red-600">
                                 {vendasPaginadas.reverse().map((row) => (
                                     <tr key={row.id} className="border-t border-gray-700">
                                         <td className="px-6 py-4">{row.id}</td>

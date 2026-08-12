@@ -6,6 +6,7 @@ import Produtos from './Produtos';
 import Live from './Live';
 import CriarProduto from './CriarProduto';
 import Loading from '../../components/All/Loading';
+import { GiHamburgerMenu } from 'react-icons/gi';
 
 import { Context } from '../../context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
@@ -68,7 +69,7 @@ const Home = () => {
                         className="w-full h-[10vh] gap-5 py-4 flex justify-center items-center px-[5%] mb-4 bg-[rgb(48,62,83)]
                         lg:px-[20%] xl:justify-between "
                     >
-                        <h1 className="hidden 2xl:flex text-4xl! font-bold text-[#ccc] font-bold">Menu</h1>
+                        <GiHamburgerMenu className='text-4xl text-white' />
 
                         <ul className="flex items-center">
                             <li
