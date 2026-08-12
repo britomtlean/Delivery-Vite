@@ -43,7 +43,7 @@ export default function Live() {
         }
     };
 
-    const conectar = async () => {
+    const entrarNaSala = async () => {
 
         if (!connection) return;
 
@@ -98,7 +98,7 @@ export default function Live() {
 
             console.log('✅ Som ativado');
 
-            await conectar();
+            await entrarNaSala();
 
         } catch (err) {
             console.error('Erro:', err);
@@ -108,6 +108,7 @@ export default function Live() {
     ///////////////////////////////////////////////////////////
 
     /////////////////////////// ACTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
     const confirmOrder = async (pedido: Record<string, any>) => {
         try {
             const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/confirmar', {
@@ -165,21 +166,17 @@ export default function Live() {
 
     useEffect(() => {
 
-        console.log('Renderizou');
+        console.log('Componente renderizado');
 
         const conectar = async () => {
 
             if (!connection) return;
-
-            connection.serverTimeoutInMilliseconds = 30000;
-            connection.keepAliveIntervalInMilliseconds = 5000;
 
             /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
             const onErro = async (mensagem: string) => {
                 console.error('❌ Servidor:', mensagem);
                 setOnline(false);
-                console.log(mensagem);
             };
 
             const onReceiveMessage = (message: any, sala: string) => {
@@ -203,8 +200,8 @@ export default function Live() {
             connection.on('Erro', onErro);
 
             connection.on('Conectado', (msg: string) => {
-                setOnline(true);
                 console.log(msg);
+                setOnline(true);
             });
 
             connection.on('ReceiveMessage', onReceiveMessage);
@@ -212,35 +209,35 @@ export default function Live() {
             /////////////////////////////////////////////////////
 
 
-        connection.onclose(async (error) => {
+            connection.onclose(async (error) => {
 
-            console.log('🔴 DESCONECTADO');
+                console.error('🔴 DESCONNECTED:', error);
+                console.log(connection.state);
 
-            console.error('🔴 DESCONNECTED:', error);
+                if (connection.state !== 'Disconnected') {
+                    await connection.stop();
+                }
 
-            if (connection.state !== 'Disconnected') {
-                await connection.stop();
-            }
+                setConnectionStatus(false);
+                setOnline(false);
+            });
 
-            setConnectionStatus(false);
-            //setOnline(false);
-        });
+            connection.onreconnecting((error) => {
 
-        connection.onreconnecting((error) => {
-            console.warn('🟡 RECONNECTING:', error);
-        });
+                console.warn('🟡 RECONNECTING:', error);
+                console.log(connection.state);
 
-        connection.onreconnected(async (connectionId) => {
+                setConnectionStatus(null);
+                setOnline(false);
+            });
 
-            console.log('🟢 RECONNECTED:', connectionId);
-            setConnectionStatus(true);
+            connection.onreconnected(async (connectionId) => {
 
-            if(online){
-                await conectar();
-            }
-        });
+                console.log('🟢 RECONNECTED:', connectionId);
+                console.log(connection.state);
+                setConnectionStatus(true);
 
-
+            });
 
             ///////////////////////////////////////////////////
 
@@ -260,6 +257,14 @@ export default function Live() {
         conectar();
 
     },[connection])
+
+    useEffect(() => {
+
+        if(!connectionStatus) return;
+
+        entrarNaSala();
+
+    }, [connectionStatus]);
 
     return (
         <div className="h-full w-full overflow-hidden flex flex-col items-center">

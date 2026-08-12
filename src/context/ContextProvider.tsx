@@ -1,7 +1,7 @@
-import { useState, createContext } from 'react';
+import { useState, createContext, useEffect } from 'react';
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'; //TIPAGEM PROP
 import type { User } from '../Types/Types';
-import type { HubConnection } from '@microsoft/signalr';
+import { HubConnectionBuilder, HubConnectionState, type HubConnection } from '@microsoft/signalr';
 
 export type ContextType = {
     theme: string;
@@ -31,15 +31,35 @@ export const Context: React.Context<ContextType | null> = createContext<ContextT
 
 export const ContextProvider = ({ children }: PropsWithChildren) => {
 
+    const newConnection = new HubConnectionBuilder()
+        .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
+        .withAutomaticReconnect()
+        .build();
+
+    newConnection.serverTimeoutInMilliseconds = 30000;
+    newConnection.keepAliveIntervalInMilliseconds = 5000;
+
     const [theme, setTheme] = useState<string>('Default');
     const [status, setStatus] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('Hello Context');
     const [contato, setContato] = useState<string>('');
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
     const [login, setLogin] = useState<User | null>(null);
-    const [connection, setConnection] = useState<HubConnection | null>(null);
+    const [connection, setConnection] = useState<HubConnection | null>(newConnection);
     const [connectionStatus, setConnectionStatus] = useState<boolean |null>(null);
     const [online, setOnline] = useState<boolean>(false);
+
+    useEffect(() => {
+
+        if(connection?.state === HubConnectionState.Connected){
+            setConnectionStatus(true);
+        }else if(connection?.state === HubConnectionState.Disconnected){
+            setConnectionStatus(false);
+        }else{
+            setConnectionStatus(null);
+        }
+
+    },[connection?.state])
 
     return (
         <Context.Provider

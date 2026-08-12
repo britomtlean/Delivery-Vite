@@ -34,9 +34,9 @@ let router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
+    //<StrictMode>
         <ContextProvider>
             <RouterProvider router={router} />
         </ContextProvider>
-    </StrictMode>
+    //</StrictMode>
 );
