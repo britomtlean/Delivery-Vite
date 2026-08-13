@@ -38,8 +38,8 @@ const Home = () => {
         if (navigator.onLine) {
             return;
         } else {
-            alert('Conexão interrompida.');
-            setLogin(null);
+            //alert('Conexão interrompida.');
+            //setLogin(null);
         }
     }, [navigator.onLine]);
 

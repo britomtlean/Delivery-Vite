@@ -257,11 +257,22 @@ export default function Live() {
                 });
         }
 
-        if(connection?.state === "Connected") return
+        const verificarConexao = async () => {
+            console.log("Verificou")
+            if (connection?.state === 'Connected') return;
 
-        conectar();
+            await conectar();
+        };
 
-    },[connection])
+        verificarConexao();
+
+        const intervalo = setInterval(verificarConexao, 30000);
+
+        return () => clearInterval(intervalo);
+
+
+
+    },[connection, navigator.onLine])
 
     useEffect(() => {
 
