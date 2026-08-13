@@ -154,7 +154,7 @@ export default function Confirmados() {
                 <div className="mt-10 text-2xl font-bold">Nenhuma venda encontrada</div>
             ) : (
                 <>
-                    <div className="overflow-x-scroll overflow-y-hidden w-full rounded-xl border border-gray-600 bg-gray-900 shadow-2xl h-[800px] lg:h-[500px] lg:overflow-x-hidden">
+                    <div className="overflow-auto w-full rounded-xl border border-gray-600 bg-gray-900 shadow-2xl h-[800px] lg:h-[500px] lg:overflow-x-hidden">
                         <table className="w-full">
                             <thead className="bg-gray-700">
                                 <tr className="w-full">

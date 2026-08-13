@@ -63,7 +63,7 @@ export default function Live() {
         if(online){
             await connection.invoke('SairSala', 'loja');
             setOnline(false);
-            alert("Loja offline")
+            //alert("Loja offline")
             return
         }
 
@@ -235,7 +235,12 @@ export default function Live() {
 
                 console.log('🟢 RECONNECTED:', connectionId);
                 console.log(connection.state);
-                setConnectionStatus(true);
+
+                //conectar
+                setConnectionStatus( (prev: any) => {
+                    connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: 'delivery1234' }));
+                    return true;
+                });
 
             });
 
@@ -262,7 +267,7 @@ export default function Live() {
 
         if(!connectionStatus) return;
 
-        entrarNaSala();
+        //entrarNaSala();
 
     }, [connectionStatus]);
 

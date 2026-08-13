@@ -32,19 +32,16 @@ const Home = () => {
             return;
         }
 
-        /*
-        const newConnection = new HubConnectionBuilder()
-            .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
-            .withAutomaticReconnect()
-            .build();
-
-            newConnection.serverTimeoutInMilliseconds = 30000;
-            newConnection.keepAliveIntervalInMilliseconds = 5000;
-
-        setConnection(newConnection);
-        */
-
     }, [login]);
+
+    useEffect(() => {
+        if (navigator.onLine) {
+            return;
+        } else {
+            alert('Conexão interrompida.');
+            setLogin(null);
+        }
+    }, [navigator.onLine]);
 
     //NAVEGAÇÃO
     const [section, setSection] = useState<string>('live');
