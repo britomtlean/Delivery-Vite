@@ -49,23 +49,15 @@ export default function Live() {
 
         if (!connection) return;
 
-        if(connectionStatus == null){
-            alert("Conexão indisponível");
-            return
-        }
-
         //AJUSTAR
-        if (connection.state === 'Disconnected' || connectionStatus == false) {
+        if (connection.state === 'Disconnected' || !connectionStatus) {
             alert('Conexão indisponível');
             return;
-           // console.log("Tentanto conexão...")
-           // await connection.start().then(() => {setConnectionStatus(true)});
         }
 
         if(online){
             await connection.invoke('SairSala', 'loja');
             setOnline(false);
-            //alert("Loja offline")
             return
         }
 
@@ -168,18 +160,11 @@ export default function Live() {
 
     useEffect(() => {
 
-        console.log('Live renderizado');
-
         const conectar = async () => {
 
             if (!connection) return;
 
             /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
-
-            const onErro = async (mensagem: string) => {
-                console.error('❌ Servidor:', mensagem);
-                setOnline(false);
-            };
 
             const onReceiveMessage = (message: any, sala: string) => {
                 console.log('📩 Servidor - ', message);
@@ -199,54 +184,16 @@ export default function Live() {
 
             //////////////// LISTENERS \\\\\\\\\\\\\\\\\
 
-            connection.on('Erro', onErro);
 
-            connection.on('Conectado', (msg: string) => {
-                console.log(msg);
-                setOnline(true);
-            });
+            connection?.off('ReceiveMessage');
 
             connection.on('ReceiveMessage', onReceiveMessage);
 
             /////////////////////////////////////////////////////
 
-
-            connection.onclose(async (error) => {
-
-                console.error('🔴 DESCONNECTED:', error);
-                console.log(connection.state);
-
-                if (connection.state !== 'Disconnected') {
-                    await connection.stop();
-                }
-
-                setConnectionStatus(false);
-                setOnline(false);
-            });
-
-            connection.onreconnecting((error) => {
-
-                console.warn('🟡 RECONNECTING:', error);
-                console.log(connection.state);
-
-                setConnectionStatus(null);
-                setOnline(false);
-            });
-
-            connection.onreconnected(async (connectionId) => {
-
-                console.log('🟢 RECONNECTED:', connectionId);
-                console.log(connection.state);
-
-                //conectar
-                setConnectionStatus( (prev: any) => {
-                    connection.invoke('EntrarSala', JSON.stringify({ sala: 'loja', chaveAcesso: 'delivery1234' }));
-                    return true;
-                });
-
-            });
-
             ///////////////////////////////////////////////////
+
+            if (connection?.state === 'Connected') return;
 
             connection
                 ?.start()
@@ -258,55 +205,47 @@ export default function Live() {
                     setConnectionStatus(false);
                     alert("Erro ao realizar conexção")
                 });
+            }
+
+            conectar();
+
+            return () => {
+                //...
+            }
+
+    },[connection])
 
 
-
-        }
-
-
+    useEffect(() => {
 
         const verificarConexao = async () => {
-
-            console.log("Verificando status de conexão...")
+            console.log('Verificando conexão...');
 
             if (connection?.state === 'Connected') return;
 
-            console.log("Conectando...")
+            console.log('Conectando...');
 
-            await conectar();
+            await connection?.start().then(() => setConnectionStatus(true));
         };
 
-        verificarConexao();
+        //verificarConexao();
 
-        const intervalo = setInterval(() =>{
-
+        const intervalo = setInterval(() => {
             if (connection?.state === 'Connected') {
-                console.log('Conectado ao SignalR. Verificação completa.');
+                console.log('Conectado ao SignalR.');
                 clearInterval(intervalo);
                 return;
             }
 
             console.log('Desconectado. Recuperando conexão');
             verificarConexao();
-
         }, 15000);
 
-        return () => {
-            clearInterval(intervalo);
-            connection?.off('Erro');
-            connection?.off('Conectado');
-            connection?.off('ReceiveMessage');
-        }
+            return () => {
+                clearInterval(intervalo);
+            };
 
-    },[connection, navigator.onLine])
-
-    useEffect(() => {
-
-        if(!connectionStatus) return;
-
-        //entrarNaSala();
-
-    }, [connectionStatus]);
+    }, [navigator.onLine]);
 
     return (
         <div className="h-full w-full overflow-hidden flex flex-col items-center">

@@ -40,6 +40,7 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
     const [login, setLogin] = useState<User | null>(null);
     const [connection, setConnection] = useState<HubConnection | null>(null);
+    const [state, setStaate] = useState(connection?.state);
     const [connectionStatus, setConnectionStatus] = useState<boolean |null>(null);
     const [online, setOnline] = useState<boolean>(false);
 
@@ -47,7 +48,7 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
 
             if(connection) return
 
-            console.log("Conexão declarada");
+            console.log("Conexão declarada.");
 
             const newConnection = new HubConnectionBuilder()
                 .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
@@ -57,24 +58,45 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
             newConnection.serverTimeoutInMilliseconds = 30000;
             newConnection.keepAliveIntervalInMilliseconds = 5000;
 
+            newConnection.onclose(async (error) => {
+                console.error('🔴 DESCONNECTED:', error);
+
+                if (newConnection.state !== 'Disconnected') {
+                    await newConnection.stop();
+                }
+
+                setConnectionStatus(false);
+                setOnline(false);
+            });
+
+            newConnection.onreconnecting((error) => {
+                console.warn('🟡 RECONNECTING:', error);
+
+                setConnectionStatus(null);
+                setOnline(false);
+            });
+
+            newConnection.onreconnected(async (connectionId) => {
+                console.log('🟢 RECONNECTED:', connectionId);
+
+                setConnectionStatus((prev: any) => {
+                    return true;
+                });
+            });
+
+            newConnection.on('Erro', async (mensagem: string) => {
+                console.error('❌ Servidor:', mensagem);
+                setOnline(false);
+            });
+
+            newConnection.on('Conectado', (msg: string) => {
+                console.log(msg);
+                setOnline(true);
+            });
+
             setConnection(newConnection);
 
-            //newConnection.on;
-            //newConnection.on;
-            //newConnection.on;
     },[])
-
-    useEffect(() => {
-
-        if(connection?.state === HubConnectionState.Connected){
-            setConnectionStatus(true);
-        }else if(connection?.state === HubConnectionState.Disconnected){
-            setConnectionStatus(false);
-        }else{
-            setConnectionStatus(null);
-        }
-
-    },[connection?.state, navigator.onLine])
 
     return (
         <Context.Provider
