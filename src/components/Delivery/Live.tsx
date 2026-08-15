@@ -45,6 +45,8 @@ export default function Live() {
 
     const entrarNaSala = async () => {
 
+        console.log(connection?.state);
+
         if (!connection) return;
 
         if(connectionStatus == null){
@@ -53,11 +55,11 @@ export default function Live() {
         }
 
         //AJUSTAR
-        while (connection.state === 'Disconnected' || connectionStatus == false) {
-            //alert('Conexão indisponível');
-            //return;
-            console.log("Tentanto conexão...")
-            await connection.start().then(() => {setConnectionStatus(true)});
+        if (connection.state === 'Disconnected' || connectionStatus == false) {
+            alert('Conexão indisponível');
+            return;
+           // console.log("Tentanto conexão...")
+           // await connection.start().then(() => {setConnectionStatus(true)});
         }
 
         if(online){
@@ -166,7 +168,7 @@ export default function Live() {
 
     useEffect(() => {
 
-        console.log('Componente renderizado');
+        console.log('Live renderizado');
 
         const conectar = async () => {
 
@@ -250,27 +252,51 @@ export default function Live() {
                 ?.start()
                 .then(() => {
                     setConnectionStatus(true);
+                    console.log('Status: Conectado.')
                 })
                 .catch(() => {
                     setConnectionStatus(false);
                     alert("Erro ao realizar conexção")
                 });
+
+
+
         }
 
+
+
         const verificarConexao = async () => {
-            console.log("Verificou")
+
+            console.log("Verificando status de conexão...")
+
             if (connection?.state === 'Connected') return;
+
+            console.log("Conectando...")
 
             await conectar();
         };
 
         verificarConexao();
 
-        const intervalo = setInterval(verificarConexao, 30000);
+        const intervalo = setInterval(() =>{
 
-        return () => clearInterval(intervalo);
+            if (connection?.state === 'Connected') {
+                console.log('Conectado ao SignalR. Verificação completa.');
+                clearInterval(intervalo);
+                return;
+            }
 
+            console.log('Desconectado. Recuperando conexão');
+            verificarConexao();
 
+        }, 15000);
+
+        return () => {
+            clearInterval(intervalo);
+            connection?.off('Erro');
+            connection?.off('Conectado');
+            connection?.off('ReceiveMessage');
+        }
 
     },[connection, navigator.onLine])
 

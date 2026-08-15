@@ -31,13 +31,7 @@ export const Context: React.Context<ContextType | null> = createContext<ContextT
 
 export const ContextProvider = ({ children }: PropsWithChildren) => {
 
-    const newConnection = new HubConnectionBuilder()
-        .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
-        .withAutomaticReconnect()
-        .build();
 
-    newConnection.serverTimeoutInMilliseconds = 30000;
-    newConnection.keepAliveIntervalInMilliseconds = 5000;
 
     const [theme, setTheme] = useState<string>('Default');
     const [status, setStatus] = useState<boolean>(true);
@@ -45,9 +39,30 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [contato, setContato] = useState<string>('');
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
     const [login, setLogin] = useState<User | null>(null);
-    const [connection, setConnection] = useState<HubConnection | null>(newConnection);
+    const [connection, setConnection] = useState<HubConnection | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<boolean |null>(null);
     const [online, setOnline] = useState<boolean>(false);
+
+    useEffect(() => {
+
+            if(connection) return
+
+            console.log("Conexão declarada");
+
+            const newConnection = new HubConnectionBuilder()
+                .withUrl('https://dotnet-webapi-base-production.up.railway.app/chat')
+                .withAutomaticReconnect()
+                .build();
+
+            newConnection.serverTimeoutInMilliseconds = 30000;
+            newConnection.keepAliveIntervalInMilliseconds = 5000;
+
+            setConnection(newConnection);
+
+            //newConnection.on;
+            //newConnection.on;
+            //newConnection.on;
+    },[])
 
     useEffect(() => {
 
@@ -59,7 +74,7 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
             setConnectionStatus(null);
         }
 
-    },[connection?.state])
+    },[connection?.state, navigator.onLine])
 
     return (
         <Context.Provider

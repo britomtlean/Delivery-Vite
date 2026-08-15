@@ -34,15 +34,6 @@ const Home = () => {
 
     }, [login]);
 
-    useEffect(() => {
-        if (navigator.onLine) {
-            return;
-        } else {
-            //alert('Conexão interrompida.');
-            //setLogin(null);
-        }
-    }, [navigator.onLine]);
-
     //NAVEGAÇÃO
     const [section, setSection] = useState<string>('live');
 
