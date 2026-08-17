@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from 'react';
-import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'; //TIPAGEM PROP
+import type { PropsWithChildren, SetStateAction } from 'react'; //TIPAGEM PROP
 import type { User } from '../Types/Types';
-import { HubConnectionBuilder, HubConnectionState, type HubConnection } from '@microsoft/signalr';
+import { HubConnectionBuilder, type HubConnection } from '@microsoft/signalr';
 
 export type ContextType = {
     theme: string;
@@ -40,7 +40,6 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
     const [notify, setNotify] = useState<Array<Record<string, any>> | null>(null);
     const [login, setLogin] = useState<User | null>(null);
     const [connection, setConnection] = useState<HubConnection | null>(null);
-    const [state, setStaate] = useState(connection?.state);
     const [connectionStatus, setConnectionStatus] = useState<boolean |null>(null);
     const [online, setOnline] = useState<boolean>(false);
 

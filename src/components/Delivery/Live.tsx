@@ -103,14 +103,13 @@ export default function Live() {
 
     /////////////////////////// ACTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-    const confirmOrder = async (pedido: Record<string, any>) => {
+    const confirmOrder = async (id: string) => {
         try {
-            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/confirmar', {
+            const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/pedido/confirmar/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(pedido),
             });
 
             const data = await res.text();
@@ -122,7 +121,7 @@ export default function Live() {
             console.log(data);
 
             setNotify((): any => {
-                const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
+                const atualizarPedidos = notify?.filter((array) => array.id != id);
                 return atualizarPedidos;
             });
         } catch (err) {
@@ -130,14 +129,13 @@ export default function Live() {
         }
     };
 
-    const cancelOrder = async (pedido: Record<string, any>) => {
+    const cancelOrder = async (id: string) => {
         try {
-            const res = await fetch('https://dotnet-webapi-base-production.up.railway.app/api/pedido/cancelar', {
+            const res = await fetch(`https://dotnet-webapi-base-production.up.railway.app/api/pedido/cancelar/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(pedido),
             });
 
             const data = await res.text();
@@ -149,7 +147,7 @@ export default function Live() {
             console.log(data);
 
             setNotify((): any => {
-                const atualizarPedidos = notify?.filter((array) => array.id != pedido.id);
+                const atualizarPedidos = notify?.filter((array) => array.id != id);
                 return atualizarPedidos;
             });
         } catch (err) {
@@ -315,7 +313,7 @@ export default function Live() {
                                         <button
                                             className="flex-1"
                                             onClick={async () => {
-                                                cancelOrder(pedido);
+                                                cancelOrder(pedido.id);
                                             }}
                                         >
                                             Cancelar
@@ -323,7 +321,7 @@ export default function Live() {
 
                                         <button
                                             className="flex-1 bg-[rgb(025,168,106)]!"
-                                            onClick={async () => confirmOrder(pedido)}
+                                            onClick={async () => confirmOrder(pedido.id)}
                                         >
                                             Confirmar
                                         </button>
