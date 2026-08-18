@@ -12,6 +12,7 @@ import { Context } from '../../context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
 import { deleteToken } from '../../Services/Storage';
 import { HubConnectionBuilder } from '@microsoft/signalr';
+import Estoque from './Estoque';
 
 const Home = () => {
 
@@ -48,7 +49,9 @@ const Home = () => {
             case 'produtos':
                 return <Produtos render={setSection} />;
             case 'new':
-                return <CriarProduto render={setSection}/>;
+                return <CriarProduto render={setSection} />;
+            case 'estoque':
+                return <Estoque />;
             default:
                 return <Live />;
         }
@@ -62,7 +65,7 @@ const Home = () => {
                         className="w-full h-[10vh] gap-5 py-4 flex justify-center items-center px-[5%] mb-4 bg-[rgb(48,62,83)]
                         lg:px-[20%] xl:justify-between "
                     >
-                        <GiHamburgerMenu className='text-4xl text-white' />
+                        <GiHamburgerMenu className="text-4xl text-white" />
 
                         <ul className="flex items-center">
                             <li
@@ -91,6 +94,13 @@ const Home = () => {
                                 className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
                             >
                                 Produtos
+                            </li>
+
+                            <li
+                                onClick={() => setSection('estoque')}
+                                className="ml-[30px] list-none cursor-pointer text-[1.3rem] font-bold! text-[#ccc] transition-all hover:border-b-4  hover:border-red-500 hover:text-red-500"
+                            >
+                                Estoque
                             </li>
                         </ul>
 

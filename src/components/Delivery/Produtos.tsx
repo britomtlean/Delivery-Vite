@@ -264,7 +264,7 @@ const Produtos = ({ render }: Prop) => {
                 flex flex-col justify-start items-center
                 font-bold text-center
                 bg-radial from-blue-400/20 to-blue-500/20
-                shadow-xl/30 border border-white rounded-3xl
+                shadow-xl/30 border border-white/0 rounded-3xl
                 hover:border-[3px] hover:border-[#64ffdd]"
             >
                 <input
@@ -296,9 +296,11 @@ const Produtos = ({ render }: Prop) => {
                                 <td>{item?.nome}</td>
                                 <td>{item?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                                 <td>{item.estoque}</td>
-                                <Link to={`/produto/${item.id}`} target="_blank" className="hover:cursor-pointer">
-                                    Editar
-                                </Link>
+                                <td>
+                                    <Link to={`/produto/${item.id}`} target="_blank" className="hover:cursor-pointer">
+                                        Editar
+                                    </Link>
+                                </td>
                             </>
                         </tr>
                     ))}

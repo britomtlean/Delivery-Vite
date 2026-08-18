@@ -18,7 +18,7 @@ const ProdutosDetalhes = () => {
     const [desc, setDesc] = useState<string>();
     const [valor, setValor] = useState<string>();
 
-    //Revisar possível bug 
+    //Revisar possível bug
     const [disponibilidade, setDisponibilidade] = useState<string>('true');
 
     //REFS
@@ -157,7 +157,7 @@ const ProdutosDetalhes = () => {
             <div
                 className={`flex justify-start items-center flex-col
                             h-3/4  py-15 mt-2 rounded-lg gap-4 transition-opacity ease-out duration-1000
-                            ${display ? 'flex-3 opacity-70' : 'w-[90%] lg:w-[50%]'}`}
+                            ${display ? 'flex-3 opacity-40' : 'w-[90%] lg:w-[50%]'}`}
             >
                 <img className="flex-5 max-w-4/5 max-h-[280px] rounded-3xl" src={`${produto?.imagem}`} alt="" />
                 <h2 className="font-bold text-2xl">{produto?.nome}</h2>
@@ -187,9 +187,9 @@ const ProdutosDetalhes = () => {
 
             <div
                 className={`flex justify-start items-center flex-col
-                            h-3/4 flex-1 py-12 mt-8 rounded-lg gap-4 border transition-all ease-out duration-1000
+                            lg:h-[80%] flex-1 py-12 mt-8 rounded-lg gap-4 border transition-all ease-out duration-1000 border-cyan-300
 
-                            ${display ? 'flex flex-5 shadow-xl/30 bg-gray-300 border-white shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
+                            ${display ? 'flex flex-5 shadow-xl/30 shadow-[0_0_80px_2px_rgba(100,197,223,0.5)] inset-shadow-sm border-3' : 'hidden boder-1'}`}
             >
                 <h1 className="font-bold text-black opacity-100 text-5xl!">Edição</h1>
                 <form
@@ -205,7 +205,7 @@ const ProdutosDetalhes = () => {
                         name="nome"
                         defaultValue={produto?.nome}
                         ref={nomeRef}
-                        className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
+                        className={`bg-white p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
                             setNome(e.target.value);
                         }}
@@ -218,7 +218,7 @@ const ProdutosDetalhes = () => {
                         defaultValue={produto?.descricao}
                         ref={descRef}
                         id=""
-                        className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
+                        className={`bg-white p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
                             setDesc(e.target.value);
                         }}
@@ -239,10 +239,14 @@ const ProdutosDetalhes = () => {
                         type="text"
                         name="valor"
                         defaultValue={produto?.valor?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        value={valor}
                         ref={valorRef}
-                        className={`bg-gray-100 p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
+                        className={`bg-white p-4 w-full rounded-lg text-center ${display ? 'opacity-100' : 'opacity-50'}`}
                         onChange={(e) => {
-                            setValor(e.target.value);
+                            setValor(() => {
+                                const value = e.target.value.replace(/[^0-9,]/g, '');
+                                return value;
+                            });
                         }}
                     />
 
